@@ -34,19 +34,19 @@ public class MatchController {
     public Partida poner(HttpSession session, @RequestBody Map<String, Object> info){
         String id = info.get("id").toString();
         String idUser = session.getAttribute("userId").toString();
-        char tipo = (char) info.get("tipo");
+        String tipo = (String) info.get("tipo");
 
-        if (tipo == 'n') {
+        if (tipo.equals("numerica")) {
             int numero = (int) info.get("numero");
-            char color = (char) info.get("color");
+            String color = (String) info.get("color");
             return this.matchService.poner(id, color, numero, idUser);
-        } else if (tipo == 's') {
+        } else if (tipo.equals("sentido")) {
             int cantidad = (int) info.get("cantidad");
-            char color = (char) info.get("color");
+            String color = (String) info.get("color");
             return this.matchService.poner(id, tipo, color, cantidad, idUser);
         } else {
-            char color = (char) info.get("color");
-            return this.matchService.poner(id, tipo, color, idUser);
+            String color = (String) info.get("color");
+            return this.matchService.poner(id, color, tipo, idUser);
         }
     }
 

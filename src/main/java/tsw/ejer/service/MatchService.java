@@ -39,7 +39,7 @@ public class MatchService {
     /*
      * Metodo para poner carta numerica
      */
-    public Partida poner(String id, char color, int numero, String idUser) {
+    public Partida poner(String id, String color, int numero, String idUser) {
         Partida partida = this.tableros.get(id);
         if (partida == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encuentra esta partida");
@@ -57,7 +57,7 @@ public class MatchService {
     /*
      * Metodo para poner carta de bloqueo, cambio de color o revertir orden
      */
-    public Partida poner(String id, char tipo, char color, String idUser) {
+    public Partida poner(String id, char tipo, String color, String idUser) {
         Partida partida = this.tableros.get(id);
         if (partida == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encuentra esta partida");
@@ -75,7 +75,7 @@ public class MatchService {
     /*
      * Metodo para poner carta de suma
      */
-    public Partida poner(String id, char tipo, char color, int cantidad, String idUser) {
+    public Partida poner(String id, String tipo, String color, int cantidad, String idUser) {
         Partida partida = this.tableros.get(id);
         if (partida == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encuentra esta partida");
@@ -93,6 +93,10 @@ public class MatchService {
 
     public Partida findById(String id) {
         return this.tableros.get(id);
+    }
+
+    public Partida poner(String id, String color, String tipo, String idUser) {
+        return null;
     }
     
 }

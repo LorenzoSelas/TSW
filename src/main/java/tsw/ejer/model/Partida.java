@@ -5,11 +5,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import tsw.ejer.Excepcion.MovimientoIlegalException;
 import tsw.ejer.Excepcion.NotImplementedException;
+import java.util.Collections;
 
 //import lombok.Data;
 
@@ -21,9 +19,11 @@ public class Partida {
     private Carta ultimaCarta;
     private User jugadorConTurno;
     private List<User> users;
-    private JSONArray cartas;
-    private int numeroCarta;
-    private Random random;
+    List<Carta> mazo = new ArrayList<>();
+    private List<Carta> jugador1 = new ArrayList<>();
+    private List<Carta> jugador2 = new ArrayList<>();
+    private Mesa mesa = new Mesa();
+    
     public Partida(){
         id = UUID.randomUUID().toString();
         this.users = new ArrayList<>();
@@ -33,23 +33,13 @@ public class Partida {
         return id;
     }
 
-    /*
-     * Metodo para poner carta sobre la ultima carta
-     * 
-     * Parametros:
-     *  carta: carta que queramos jugar
-     *      n: numerica
-     *      b: bloqueo
-     *      r: revertir
-     *      s: sumar
-     *      c: cambiar color
-     *  idUser: usuario que intenta jugar
-     */
+    /*Este método pone las cartas sobre la mesa si se puede
+    He modificado los char a String para mayor claridad con los nombres y tipos*/ 
     public void poner(Carta carta, String idUser) throws MovimientoIlegalException, NotImplementedException{
         if (!getJugadorConTurno().getId().equals(idUser))
             throw new MovimientoIlegalException("Al usuario con id " + idUser + " no le toca jugar");
         switch (carta.getTipo()) {
-            case 'n':
+            case "numerica":
                 if (carta.getColor() == this.ultimaCarta.getColor() || carta.getNumero() == this.ultimaCarta.getNumero()){
                     this.ultimaCarta = carta;
                     pasarTurno(carta);
@@ -57,7 +47,7 @@ public class Partida {
                     throw new MovimientoIlegalException("Esta carta no se puede jugar");
                 }
                 break;
-            case 'b':
+            case "bloqueo":
                 if (carta.getColor() == this.ultimaCarta.getColor() || carta.getTipo() == this.ultimaCarta.getTipo()){
                     this.ultimaCarta = carta;
                     pasarTurno(carta);
@@ -66,7 +56,7 @@ public class Partida {
                     throw new MovimientoIlegalException("Esta carta no se puede jugar");
                 }
                 break;
-            case 'r':
+            case "sentido":
                 if (carta.getColor() == this.ultimaCarta.getColor() || carta.getTipo() == this.ultimaCarta.getTipo()){
                     this.ultimaCarta = carta;
                     sentido = !this.sentido;
@@ -75,7 +65,7 @@ public class Partida {
                     throw new MovimientoIlegalException("Esta carta no se puede jugar");
                 }
                 break;
-            case 's':
+            case "sumar":
                 if(carta.getTipo() == this.ultimaCarta.getTipo() && carta.getCantidad() == this.ultimaCarta.getCantidad()){
                     this.ultimaCarta =carta;
                     pasarTurno(carta);
@@ -83,7 +73,7 @@ public class Partida {
                     throw new NotImplementedException("Esta carta no se puede jugar");
                 }
                 
-            case 'c':
+            case "cambia-color":
                 throw new NotImplementedException("Esta funcionalidad aun no esta implementada");
             default:
                 throw new MovimientoIlegalException("No se ha encontrado una carta valida");       
@@ -102,9 +92,7 @@ public class Partida {
                 this.jugadorConTurno = this.users.get(this.users.size() - 1);
             else
                 this.jugadorConTurno = this.users.get(actual - 1);
-        if(carta.getCantidad()== 2){
-            cartas.put(new Random().nextInt(0-9), carta);
-        }
+        
     }
 
     public List<User> getUsers(){
@@ -121,35 +109,62 @@ public class Partida {
     public void iniciar(){
         this.jugadorConTurno = this.users.get(new Random().nextInt(this.users.size()));
         this.sentido = true;
-        //Ideas para generar cartas y guardarlas en un JSONArray
-        for(int i =0; i<80;i++ ){
-            //cartas.put(crearCarta(ultimaCarta.getNumero(generarNumero()), ultimaCarta.getColor(), ultimaCarta.getCantidad()));
+
+        //Cartas numéricas: 72
+        //Cartas numéricas del 0 al 9
+        for (int i = 0; i <= 9; i++) {
+            mazo.add(new Carta(i, "rojo"));
+            mazo.add(new Carta(i, "amarillo"));
+            mazo.add(new Carta(i, "verde"));
+            mazo.add(new Carta(i, "azul"));
         }
-    }
 
-    private int generarNumero(){
-        int numero= random.nextInt(6);
-        //numero = 0, carta numérica
-        if(numero ==0){
-            numero= random.nextInt(10);
-        } else{
-            numero= '\0';
+        //Cartas numéricas del 1 al 9
+        for (int i = 1; i <= 9; i++) {
+            mazo.add(new Carta(i, "rojo"));
+            mazo.add(new Carta(i, "amarillo"));
+            mazo.add(new Carta(i, "verde"));
+            mazo.add(new Carta(i, "azul"));
         }
-        return numero;
+
+        //Cartas de sumar 2, bloqueo, y cambiar turno: 24 en total
+        for (int i = 0; i < 2; i++) {
+            mazo.add(new Carta("+2", "rojo", 2));
+            mazo.add(new Carta("+2", "amarillo", 2));
+            mazo.add(new Carta("+2", "verde", 2));
+            mazo.add(new Carta("+2", "azul", 2));
+
+            mazo.add(new Carta("bloqueo", "rojo"));
+            mazo.add(new Carta("bloqueo", "amarillo"));
+            mazo.add(new Carta("bloqueo", "verde"));
+            mazo.add(new Carta("bloqueo", "azul"));
+
+            mazo.add(new Carta("cambiar-turno", "rojo"));
+            mazo.add(new Carta("cambiar-turno", "amarillo"));
+            mazo.add(new Carta("cambiar-turno", "verde"));
+            mazo.add(new Carta("cambiar-turno", "azul"));
+        }
+
+        //Cartas de cambio de color y sumar 4 con cambio de color: 8 en total
+        for (int i = 0; i < 4; i++) {
+            mazo.add(new Carta("cambiar-color", 4));
+            mazo.add(new Carta("+4", "cambiar-color", 4));
+        }
+
+        // Barajar el mazo 72+24+8= 104 cartas
+        Collections.shuffle(mazo); 
+        repartir(mazo);
     }
 
-    private static JSONArray crearCarta(int numero, char color, int tipo) {
-        JSONArray carta = new JSONArray();
-        carta.put(crearAtributo("Numero de carta", numero));
-        carta.put(crearAtributo("Color", color));
-        carta.put(crearAtributo("Tipo de carta", tipo));
-        return carta;
+    //Reparte las cartas a los dos jugaores y pone una sobre la mesa
+    public void repartir(List<Carta> mazo){
+        for (int i = 0; i < 7; i++) {
+            jugador1.add(mazo.remove(0));
+            jugador2.add(mazo.remove(0));
+        }
+        // Poner una carta sobre la mesa
+        mesa.setCarta(mazo.remove(0));
     }
 
-    // Método para crear un objeto JSON que representa un atributo de la carta
-    private static JSONObject crearAtributo(String nombre, Object valor) {
-        JSONObject atributo = new JSONObject();
-        atributo.put(nombre, valor);
-        return atributo;
-    }
+    
 }
