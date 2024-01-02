@@ -18,7 +18,7 @@ public class UserService {
         User user = new User();
         user.setNombre(nombre);
         user.setEmail(email);
-        user.setPasswword(pwd1);
+        user.setPassword(pwd1);
 
         try {
             this.userDAO.save(user);

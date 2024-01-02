@@ -19,14 +19,11 @@ public class Partida {
     private Carta ultimaCarta;
     private User jugadorConTurno;
     private List<User> users;
-    List<Carta> mazo = new ArrayList<>();
-    private List<Carta> jugador1 = new ArrayList<>();
-    private List<Carta> jugador2 = new ArrayList<>();
-    private Mesa mesa = new Mesa();
-    
+    private List<Carta> mazo = new ArrayList<>();
+    private List<List<Carta>> cartasJugadores;
     public Partida(){
         id = UUID.randomUUID().toString();
-        this.users = new ArrayList<>();
+        this.cartasJugadores = new ArrayList<>();
     }
 
     public String getId() {
@@ -35,21 +32,23 @@ public class Partida {
 
     /*Este método pone las cartas sobre la mesa si se puede
     He modificado los char a String para mayor claridad con los nombres y tipos*/ 
-    public void poner(Carta carta, String idUser) throws MovimientoIlegalException, NotImplementedException{
+    public void poner(Carta carta, String idUser) throws MovimientoIlegalException, NotImplementedException {
         if (!getJugadorConTurno().getId().equals(idUser))
             throw new MovimientoIlegalException("Al usuario con id " + idUser + " no le toca jugar");
         switch (carta.getTipo()) {
             case "numerica":
-                if (carta.getColor() == this.ultimaCarta.getColor() || carta.getNumero() == this.ultimaCarta.getNumero()){
+                if (carta.getColor().equals(this.ultimaCarta.getColor()) || carta.getNumero() == this.ultimaCarta.getNumero()) {
                     this.ultimaCarta = carta;
+                    quitarCartaAJugador(carta, jugadorConTurno);
                     pasarTurno(carta);
                 } else {
                     throw new MovimientoIlegalException("Esta carta no se puede jugar");
                 }
                 break;
             case "bloqueo":
-                if (carta.getColor() == this.ultimaCarta.getColor() || carta.getTipo() == this.ultimaCarta.getTipo()){
+                if (carta.getColor().equals(this.ultimaCarta.getColor()) || carta.getTipo().equals(this.ultimaCarta.getTipo())) {
                     this.ultimaCarta = carta;
+                    quitarCartaAJugador(carta, jugadorConTurno);
                     pasarTurno(carta);
                     pasarTurno(carta);
                 } else {
@@ -57,29 +56,42 @@ public class Partida {
                 }
                 break;
             case "sentido":
-                if (carta.getColor() == this.ultimaCarta.getColor() || carta.getTipo() == this.ultimaCarta.getTipo()){
+                if (carta.getColor().equals(this.ultimaCarta.getColor()) || carta.getTipo().equals(this.ultimaCarta.getTipo())) {
                     this.ultimaCarta = carta;
                     sentido = !this.sentido;
+                    quitarCartaAJugador(carta, jugadorConTurno);
                     pasarTurno(carta);
                 } else {
                     throw new MovimientoIlegalException("Esta carta no se puede jugar");
                 }
                 break;
             case "sumar":
-                if(carta.getTipo() == this.ultimaCarta.getTipo() && carta.getCantidad() == this.ultimaCarta.getCantidad()){
-                    this.ultimaCarta =carta;
+                if (carta.getTipo().equals(this.ultimaCarta.getTipo()) && carta.getCantidad() == this.ultimaCarta.getCantidad()) {
+                    this.ultimaCarta = carta;
+                    quitarCartaAJugador(carta, jugadorConTurno);
+            
+                    // Verificar si el siguiente jugador tiene cartas para sumar
+                    if (tieneCartasParaSumar(jugadorConTurno, carta.getCantidad())) {
+                        // Agregar las cartas al siguiente jugador y actualizar la última carta
+                        agregarCartasASiguienteJugador(jugadorConTurno, carta.getCantidad());
+                        cambiarUltimaCarta(carta);
+                    } else {
+                        // Acumular cartas en la última carta hasta que el siguiente jugador no disponga de ellas
+                        acumularCartasEnUltimaCarta(jugadorConTurno, carta.getCantidad());
+                    }
+            
                     pasarTurno(carta);
-                }else{
+                } else {
                     throw new NotImplementedException("Esta carta no se puede jugar");
                 }
-                
+                break;
+
             case "cambia-color":
-                throw new NotImplementedException("Esta funcionalidad aun no esta implementada");
+                throw new NotImplementedException("Esta funcionalidad aún no está implementada");
             default:
-                throw new MovimientoIlegalException("No se ha encontrado una carta valida");       
+                throw new MovimientoIlegalException("No se ha encontrado una carta válida");
         }
     }
-
     private void pasarTurno(Carta carta) {
         int actual = users.indexOf(this.jugadorConTurno);
         if (sentido)
@@ -95,6 +107,33 @@ public class Partida {
         
     }
 
+    
+    
+    private boolean tieneCartasParaSumar(User jugador, int cantidad) {
+        return cartasJugadores.get(users.indexOf(jugador)).size() >= cantidad;
+    }
+    
+    private void agregarCartasASiguienteJugador(User jugador, int cantidad) {
+        List<Carta> cartasSiguienteJugador = cartasJugadores.get(users.indexOf(jugador));
+        for (int i = 0; i < cantidad; i++) {
+            Carta carta = mazo.remove(0);  // Tomar la carta del mazo
+            cartasSiguienteJugador.add(carta);  // Agregar la carta al siguiente jugador
+        }
+    }
+    
+    private void cambiarUltimaCarta(Carta nuevaUltimaCarta) {
+        this.ultimaCarta = nuevaUltimaCarta;
+    }
+    
+    private void acumularCartasEnUltimaCarta(User siguienteJugador, int cantidad) {
+        List<Carta> cartasSiguienteJugador = cartasJugadores.get(users.indexOf(siguienteJugador));
+        Carta carta = null;
+        for (int i = 0; i < cantidad; i++) {
+            carta = cartasSiguienteJugador.remove(0);  // Tomar la carta del siguiente jugador
+            mazo.add(carta);  // Agregar la carta al mazo
+        }
+        cambiarUltimaCarta(carta);  // La última carta ahora es la carta que se tomó del siguiente jugador
+    }
     public List<User> getUsers(){
         return this.users;
     }
@@ -106,6 +145,9 @@ public class Partida {
         return this.jugadorConTurno;
     }
 
+    private void quitarCartaAJugador(Carta carta, User jugador) {
+        cartasJugadores.get(users.indexOf(jugador)).remove(carta);
+    }
     public void iniciar(){
         this.jugadorConTurno = this.users.get(new Random().nextInt(this.users.size()));
         this.sentido = true;
@@ -158,12 +200,17 @@ public class Partida {
 
     //Reparte las cartas a los dos jugaores y pone una sobre la mesa
     public void repartir(List<Carta> mazo){
-        for (int i = 0; i < 7; i++) {
-            jugador1.add(mazo.remove(0));
-            jugador2.add(mazo.remove(0));
+        for (int i = 0; i < 2; i++) {
+            List<Carta> cartasJugador = new ArrayList<>();
+            cartasJugadores.add(cartasJugador);
+            for (int j = 0; j < 7; j++) {
+                Carta carta = mazo.remove(0);
+                cartasJugador.add(carta);
+            }
         }
-        // Poner una carta sobre la mesa
-        mesa.setCarta(mazo.remove(0));
+        
+        ultimaCarta = mazo.remove(0);
+        
     }
 
     

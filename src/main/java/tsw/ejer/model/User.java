@@ -1,5 +1,6 @@
 package tsw.ejer.model;
 
+
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -7,49 +8,59 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
+
 @Entity
 @Table(indexes = {
     @Index(columnList = "email", unique = true)
 })
 public class User {
-    @Id @Column(length = 36)
+    @Id
+    @Column(length = 36)
     private String id;
+
     @Column(nullable = false)
     private String email;
+
     @Column(nullable = false)
     private String nombre;
+
     @Column(nullable = false)
     private String password;
-    
-    public User(){
+
+   
+
+    public User() {
         this.id = UUID.randomUUID().toString();
+        
     }
 
-    public void setNombre(String n){
+    public void setNombre(String n) {
         this.nombre = n;
     }
 
-    public void setEmail(String e){
+    public void setEmail(String e) {
         this.email = e;
     }
 
-    public void setPasswword(String p){
+    public void setPassword(String p) {
         this.password = org.apache.commons.codec.digest.DigestUtils.sha512Hex(p);
     }
 
-    public String getNombre(){
+    public String getNombre() {
         return this.nombre;
     }
 
-    public String getEmail(){
+    public String getEmail() {
         return this.email;
     }
 
-    public String getPasswword(){
+    public String getPassword() {
         return this.password;
     }
 
-    public String getId(){
+    public String getId() {
         return id;
     }
+
+    
 }
