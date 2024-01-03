@@ -1,0 +1,16 @@
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div class="form">
+      <label>Email: </label>
+      <br>
+      <input type="email" formControlName="Email" [ngClass]="{'error-border': loginForm.get('Email')?.invalid && loginForm.get('Email')?.touched}" data-toggle="tooltip" data-placement="top" title="{{getEmailErrorMessage()}}">
+      <br>
+      <br>
+      <label>Contraseña:</label>
+      <br>
+      <input type="password" formControlName="Pwd" [ngClass]="{'error-border': loginForm.get('Pwd')?.invalid && loginForm.get('Pwd')?.touched}" data-toggle="tooltip" data-placement="top" title="{{getPasswordErrorMessage()}}">
+      <br>
+      <br>
+      <button type="submit" [disabled]="loginForm.invalid" data-toggle="tooltip" data-placement="top" title="{{getEmailErrorMessage()}}&#10;{{getPasswordErrorMessage()}}"> Logearse</button>
+    </div>
+  </form>
+  

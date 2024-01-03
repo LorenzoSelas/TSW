@@ -1,0 +1,6 @@
+<p>You have not enough credit. Please, purchase a bonus:</p>
+Choose an offer:<br>
+<input (change)="amount=10" type="radio" name="option" value="10" checked>
+10 matches x 10€<br>
+<input (change)="amount=20" type="radio" name="option" value="20">
+20 matches x 15€<br> <button (click)="requestPrepayment()">Go to payment</button>

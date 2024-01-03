@@ -1,0 +1,15 @@
+img {
+    width: 300px;
+    height: 300px;
+}
+button {
+    background-color: transparent !important; 
+    outline: none;
+    border: 0;
+}
+
+.tabla-salas{
+    width: 80vh;
+    justify-content: left;
+    text-align: left;
+}

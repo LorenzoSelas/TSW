@@ -1,0 +1,24 @@
+<h1 *ngIf="!juego">Los juegos que tenemos en este momento son los siguientes:</h1>
+
+<button (click)="setearJuego('Raya')" *ngIf="!juego"><img src="assets/raya.jpg"></button>
+<button (click)="setearJuego('Uno')" *ngIf="!juego"><img src="assets/uno.jpg"></button>
+
+<mat-list *ngIf="juego" role="list" id="salas">
+  <table class="tabla-salas">
+    <thead>
+      <tr>
+        <th mat-header="Id">Id</th>
+        <th mat-header="Jugadores">Jugadores</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let id of listaDeJuegos">
+        <td>
+          <mat-list-item>{{ id }}</mat-list-item>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</mat-list>
+
+<router-outlet></router-outlet>

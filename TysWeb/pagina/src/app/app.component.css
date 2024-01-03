@@ -1,0 +1,27 @@
+.mat-menu {
+    justify-self: right;
+}
+
+.transparent-bg.mat-menu-trigger {
+    background-color: transparent !important; 
+    outline: none;
+    border: 0;
+  }
+  
+  ::ng-deep .mat-menu-panel {
+    position: absolute !important;
+    transform-origin: right top !important;
+    top: 60px !important;
+    right: 0 !important;
+    background-color: transparent !important;
+    border: none !important;
+  }
+  .mat-menu-panel {
+    position: absolute !important;
+    transform-origin: right top !important;
+    top: 60px !important;
+    right: 0 !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}

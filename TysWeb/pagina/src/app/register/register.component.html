@@ -1,0 +1,24 @@
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <div class="form">
+        <label>Nombre completo:</label>
+        <br>
+        <input type="text" formControlName="Nombre" [ngClass]="{'error-border': registerForm.get('Nombre')?.invalid && registerForm.get('Nombre')?.touched}" data-toggle="tooltip" data-placement="top" title="{{getNombreErrorMessage('Nombre')}}">
+        <br>
+        <label>Email:</label>
+        <br>
+        <input type="text" formControlName="Email" [ngClass]="{'error-border': registerForm.get('Email')?.invalid && registerForm.get('Email')?.touched}" data-toggle="tooltip" data-placement="top" title="{{getEmailErrorMessage('Email')}}">
+        <br>
+        <label>Contase&ntilde;a:</label>
+        <br>
+        <input type="text" formControlName="Pwd1" [ngClass]="{'error-border': registerForm.get('Pwd1')?.invalid && registerForm.get('Pwd1')?.touched}" data-toggle="tooltip" data-placement="top" title="{{getPasswordErrorMessage('Pwd1')}}">
+        <br>
+        <label>Repetir Contrase&ntilde;a</label>
+        <br>
+        <input type="text" formControlName="Pwd2" [ngClass]="{'error-border': registerForm.get('Pwd2')?.invalid && registerForm.get('Pwd2')?.touched}" data-toggle="tooltip" data-placement="top" title="{{getPasswordErrorMessage('Pwd2')}}">
+        <br>
+        <button type="submit"> Guardar datos</button>
+    </div>
+</form>
+<span *ngIf="respuestaOK">Te hemos enviado un email de confirmaci&otilde;n.</span>
+
+<button (click)="bindeo()">Prueba de bindeo</button>
