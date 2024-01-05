@@ -1,3 +1,6 @@
+package tsw.ejer.ws;
+
+import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.BinaryMessage;
 import org.springframework.web.socket.CloseStatus;
@@ -7,6 +10,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import org.json.JSONObject;
 import tsw.ejer.http.UserController;
 import tsw.ejer.model.User;
+
 @Component
 public class WSUsuarios extends TextWebSocketHandler {
     @Override
@@ -24,7 +28,7 @@ public class WSUsuarios extends TextWebSocketHandler {
 		if(tipo.equals("TOKEN VALIDO")) {
 			String token = jso.getString("token");
 			
-			User user= UserControler.usersByToken.get(token);
+			User user= UserController.usersByToken.get(token);
 			TextMessage respuesta= new TextMessage("404");
 			if(user!=null)
 				respuesta= new TextMessage(user.getId());
@@ -46,4 +50,5 @@ public class WSUsuarios extends TextWebSocketHandler {
 	public void handleTransportError(WebSocketSession session, Throwable exception)
 			throws Exception {
 	}
+
 }

@@ -1,3 +1,4 @@
+package tsw.ejer.ws;
 import org.springframework.web.socket.WebSocketSession;
 
 import jakarta.servlet.http.HttpSession;
@@ -36,5 +37,5 @@ public class SessionWS {
 		this.nombre=nombre;
 		
 		
-	}
+	} 
 }

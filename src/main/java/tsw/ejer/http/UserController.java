@@ -1,5 +1,6 @@
 package tsw.ejer.http;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,8 @@ import jakarta.servlet.http.HttpSession;
 public class UserController {
     @Autowired
     private UserService userService;
+    public static Map<String,User> usersByToken= new HashMap<>();
+	public static Map<String,HttpSession> httpSessions =new HashMap<>();
 
     @PostMapping("register")
     public void register(@RequestBody Map<String, Object> info){

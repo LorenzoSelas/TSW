@@ -1,3 +1,4 @@
+package tsw.ejer.ws;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,7 +13,6 @@ import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
-
 import tsw.ejer.http.UserController;
 import tsw.ejer.model.User;
 import jakarta.servlet.http.HttpSession;
@@ -44,7 +44,7 @@ public class WSGames extends TextWebSocketHandler{
 
 //		String httpId=session.getUri().getQuery();
 //		 httpId= httpId.substring(7);
-		 HttpSession httpSession =UserControler.httpSessions.get(httpId);
+		 HttpSession httpSession =UserController.httpSessions.get(httpId);
 		 
 		 SessionWS sessionWS = new SessionWS(session,httpSession);
 		 User user=(User) httpSession.getAttribute("user");

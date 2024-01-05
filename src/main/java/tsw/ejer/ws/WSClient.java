@@ -1,3 +1,4 @@
+package tsw.ejer.ws;
 import java.io.IOException;
 import java.net.URI;
 import java.util.concurrent.CountDownLatch;
@@ -46,6 +47,7 @@ public class WSClient {
 		latch.countDown();
 		//this.receiver.onResponseReceived(new JSONObject().put("type", "action").put("action", "WS_ERROR"));
 	}
+ 
     @OnMessage
     public void onText(String message, Session session) {
     	System.out.println(message);
@@ -72,4 +74,5 @@ public class WSClient {
             e.printStackTrace();
         }
     }
+    
 }
