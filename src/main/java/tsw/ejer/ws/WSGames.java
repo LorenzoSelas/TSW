@@ -1,151 +1,138 @@
 package tsw.ejer.ws;
+
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.BinaryMessage;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
-import tsw.ejer.http.UserController;
-import tsw.ejer.model.User;
-import jakarta.servlet.http.HttpSession;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 @Component
-public class WSGames extends TextWebSocketHandler{
-    private List<WebSocketSession> sessions = new ArrayList<>();
-	private Map<String, SessionWS> sessionsByNombre= new HashMap<>();
-	private Map<String, SessionWS> sessionsById= new HashMap<>();
+public class WSGames extends TextWebSocketHandler {
+	private List<WebSocketSession> sessions = new ArrayList<>();
+	private Map<String, SessionWS> sessionsByNombre = new HashMap<>();
+	private Map<String, SessionWS> sessionsById = new HashMap<>();
+	private Map<String, List<WebSocketSession>> sessionsByRoom = new HashMap<>();
+
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-		HttpHeaders headers = session.getHandshakeHeaders();
-
-		Collection<List<String>> values = headers.values();
-		String httpId = null;
-		for (List<String> value : values) {
-			for (String cadena : value) {
-				if (cadena.startsWith("JSESSIONID")) {
-					httpId = cadena.substring(11);
-					break;
-				}
-			}
-			if (httpId!=null)
-				break;
-		}
-
-
-//		String httpId=session.getUri().getQuery();
-//		 httpId= httpId.substring(7);
-		 HttpSession httpSession =UserController.httpSessions.get(httpId);
-		 
-		 SessionWS sessionWS = new SessionWS(session,httpSession);
-		 User user=(User) httpSession.getAttribute("user");
-		 sessionWS.setNombre(user.getNombre());
-		 user.setSessionWS(sessionWS);
-		 
-		 this.sessionsById.put(session.getId(), sessionWS);
-		 
-		this.sessions.add(session);
+		System.out.println("Conexión establecida:" + session.getId());
 		
+        URI uri = session.getUri();
+        String path = uri.getPath();
+
+        // Extraer el roomId de la URI
+        String[] pathSegments = path.split("/");
+        if (pathSegments.length >= 3) {
+            String roomId = pathSegments[2];
+            
+            // Ahora tienes el roomId y puedes manejar la conexión en consecuencia
+            // ...
+			try {
+				sessionsByRoom.get(roomId).add(session);
+			} catch (Exception e) {
+				List<WebSocketSession> lista = new ArrayList<>();
+				sessionsByRoom.put(roomId, lista);
+			}
+            this.sessions.add(session);
+        } else {
+            // Manejar el caso en el que no se pueda extraer el roomId de la URI
+            // Puedes cerrar la conexión o tomar alguna otra acción
+            session.close(CloseStatus.BAD_DATA.withReason("Invalid URI"));
+        }
 	}
+
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message)
 			throws Exception {
-		
+
 		JSONObject jso = new JSONObject(message.getPayload());
 		String tipo = jso.getString("tipo");
-		if(tipo.equals("IDENT")) {
-			String nombre = jso.getString("nombre");
-			SessionWS sesionWS = this.sessionsById.get(session.getId());
+		String nombre;
+		if (tipo.equals("IDENT")) {
+			nombre = jso.getString("nombre");
+			SessionWS sesionWS = new SessionWS(nombre, session);
 			sesionWS.setNombre(nombre);
 			this.sessionsByNombre.put(nombre, sesionWS);
 			this.sessionsById.put(session.getId(), sesionWS);
-			this.difundir(session,"tipo", "NUEVO USUARIO", "nombre", nombre);
+			this.difundir(session, "tipo", "NUEVO USUARIO", "nombre", nombre);
 			this.bienvenida(session);
 			return;
-		}
-		if(tipo.equals("MENSAJE PRIVADO")) {
-			String destinatario = jso.getString("destinatario");
-			String texto = jso.getString("texto");
-			String remitente = this.sessionsById.get(session.getId()).getNombre();
-			JSONObject respuesta = new JSONObject().
-					put("tipo", "MENSAJE PRIVADO").
-					put("texto",texto).
-					put("remitente", remitente);
-			
-			SessionWS sesionDestinatario= this.sessionsByNombre.get(destinatario);
-			
-			if(sesionDestinatario == null) {
-				respuesta.put("tipo", "SE FUE");
-				TextMessage messageRespuesta = new TextMessage(respuesta.toString());
-				session.sendMessage(messageRespuesta);
-			} else {
-				WebSocketSession sessionDestinatario = (this.sessionsByNombre.get(destinatario)).getSession();
-				TextMessage messageRespuesta = new TextMessage(respuesta.toString());
-				sessionDestinatario.sendMessage(messageRespuesta);
+		} else {
+			try {
+				nombre = jso.getString("nombre");
+				String mensaje = jso.getString("texto");
+				difundir(session, "tipo","MENSAJE","texto",mensaje);
+			} catch (Exception e) {
+				// TODO: handle exception
 			}
-			return;
 		}
-		/*for(WebSocketSession s: this.sessions)
-			s.sendMessage(message);*/
 	}
-	
+
 	private void bienvenida(WebSocketSession sessionDelTipoQueAcabaDeLegar) {
 		JSONObject jso = new JSONObject().put("tipo", "BIENVENIDA");
 		JSONArray jsaUsuarios = new JSONArray();
-		
+
 		Collection<SessionWS> usuariosConectados = this.sessionsByNombre.values();
-		for(SessionWS usuarioConectado: usuariosConectados) {
-			if(usuarioConectado.getSession()!= sessionDelTipoQueAcabaDeLegar) {
+		for (SessionWS usuarioConectado : usuariosConectados) {
+			if (usuarioConectado.getSession() != sessionDelTipoQueAcabaDeLegar) {
 				jsaUsuarios.put(usuarioConectado.getNombre());
 			}
 		}
 		jso.put("usuarios", jsaUsuarios);
 		try {
 			sessionDelTipoQueAcabaDeLegar.sendMessage(new TextMessage(jso.toString()));
-		}catch (IOException e){
-			this.elimiarSesion(sessionDelTipoQueAcabaDeLegar);
+		} catch (IOException e) {
+			this.eliminarSesion(sessionDelTipoQueAcabaDeLegar);
 		}
-		
+
 	}
+
 	private void difundir(WebSocketSession remitente, Object... clavesyValores) {
-		//tipo, NUEVO USUARIO, nombre, Pepe, edad, 20, curso, 4º
+		// tipo, NUEVO USUARIO, nombre, Pepe, edad, 20, curso, 4º
 		JSONObject jso = new JSONObject();
-		for(int i=0; i< clavesyValores.length; i+=2) {
+		for (int i = 0; i < clavesyValores.length; i += 2) {
 			String clave = clavesyValores[i].toString();
-			String valor = clavesyValores[i+1].toString();
+			String valor = clavesyValores[i + 1].toString();
 			jso.put(clave, valor);
 		}
-		for(WebSocketSession session: this.sessions) {
-			if(session!= remitente) {
+		for (WebSocketSession session : this.sessions) {
+			if (session != remitente) {
 				try {
 					session.sendMessage(new TextMessage(jso.toString()));
 				} catch (IOException e) {
-					this.elimiarSesion(session);
+					this.eliminarSesion(session);
 				}
 			}
 		}
 	}
-	private void elimiarSesion(WebSocketSession session) {
+
+	private void eliminarSesion(WebSocketSession session) {
 		this.sessions.remove(session);
-		SessionWS sessionWS= this.sessionsById.remove(session.getId());
+		SessionWS sessionWS = this.sessionsById.remove(session.getId());
 		this.sessionsByNombre.remove(sessionWS.getNombre());
 	}
-	public void afterCnnectionClosed(WebSocketSession sessions, CloseStatus status ) throws Exception {
+
+	public void afterConnectionClosed(WebSocketSession sessions, CloseStatus status) throws Exception {
 		this.sessionsById.remove(sessions.getId());
 		this.sessionsByNombre.remove(sessions.getId()).getNombre();
 	}
+
 	@Override
 	protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) {
 	}
+
 	@Override
 	public void handleTransportError(WebSocketSession session, Throwable exception)
 			throws Exception {

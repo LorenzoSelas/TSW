@@ -8,13 +8,12 @@ import org.springframework.web.socket.server.support.HttpSessionHandshakeInterce
 @EnableWebSocket
 public class WSConfigurer implements WebSocketConfigurer{
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-		registry.
-		addHandler(new WSGames(), "/wsGames").
-		setAllowedOrigins("*").
-		addHandler(new WSUsuarios(), "/wsUusarios").
-		setAllowedOrigins("*").
-		addInterceptors(new HttpSessionHandshakeInterceptor());
-		
-		
+		registry.addHandler(new WSGames(), "/wsGames/{roomId}")
+                .setAllowedOrigins("*")
+                .addInterceptors(new HttpSessionHandshakeInterceptor());
+        
+        registry.addHandler(new WSUsuarios(), "/wsUsuarios")
+                .setAllowedOrigins("*")
+                .addInterceptors(new HttpSessionHandshakeInterceptor());
 	}
 }

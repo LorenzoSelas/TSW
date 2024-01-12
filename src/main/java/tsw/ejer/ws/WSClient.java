@@ -37,7 +37,7 @@ public class WSClient {
     public void onOpen(Session session) {
         this.session = session;
         latch.countDown();
-        System.out.println("conexión dle cliente establecida");
+        System.out.println("conexión del cliente establecida");
         //this.receiver.onResponseReceived(new JSONObject().put("type", "action").put("action", "WS_PREPARED"));
     }
 	

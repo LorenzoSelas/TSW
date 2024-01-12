@@ -1,5 +1,8 @@
 package tsw.ejer.ws;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.BinaryMessage;
@@ -7,16 +10,17 @@ import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
-import org.json.JSONObject;
 import tsw.ejer.http.UserController;
 import tsw.ejer.model.User;
 
 @Component
 public class WSUsuarios extends TextWebSocketHandler {
+	private List<SessionWS> sessions = new ArrayList<>();
     @Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-		System.out.println("conexion estableciad " + session.getId());
-	
+		System.out.println("conexion establecida " + session.getId());
+		SessionWS sessionWS = new SessionWS(null, session);
+		this.sessions.add(sessionWS);
 		
 	}
 	@Override
@@ -35,6 +39,13 @@ public class WSUsuarios extends TextWebSocketHandler {
 			
 			session.sendMessage(respuesta);
 			session.close();
+		}else if (tipo.equals("MENSAJE PRIVADO")) {
+			try {
+				String nombre = jso.getString("destinatario");
+				User user = UserController.usersByName.get(nombre);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
 		}
 		
 	}

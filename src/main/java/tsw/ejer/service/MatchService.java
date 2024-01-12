@@ -1,5 +1,7 @@
 package tsw.ejer.service;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,21 +11,32 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import tsw.ejer.Excepcion.MovimientoIlegalException;
-import tsw.ejer.Excepcion.NotImplementedException;
-import tsw.ejer.model.Carta;
-import tsw.ejer.model.Partida;
+import tsw.ejer.model.Tablero;
 import tsw.ejer.model.User;
 
 @Service
 public class MatchService {
-    private Map<String, Partida> tableros = new HashMap<String, Partida>();
-    private List<Partida> tablerosPendientes = new ArrayList<>();
+    private Map<String, Tablero> tableros = new HashMap<String, Tablero>();
+    private List<Tablero> tablerosPendientes = new ArrayList<>();
 
-    public Partida newMatch(User user) {
-        Partida tab;
+    public Tablero newMatch(User user, String juego) throws Exception{
+        Tablero tab = null;
         if (this.tablerosPendientes.isEmpty()){
-            tab = new Partida();
+            Class<?> clazz;
+            try{
+                juego = "tsw.ejer.model." + juego;
+                clazz = Class.forName(juego);
+            }catch (ClassNotFoundException e){
+                throw new Exception("El juego indicado no existe.");
+            }
+            Constructor<?> cons = clazz.getConstructors()[0];
+            try {
+                tab = (Tablero) cons.newInstance();
+            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                    | InvocationTargetException e) {
+                throw new Exception("Ha ocurrido un problema, contacta con el administrador si el problema persiste.");
+            }
+            
             tab.addUser(user);
             this.tablerosPendientes.add(tab);
             this.tableros.put(tab.getId(),tab);
@@ -36,67 +49,28 @@ public class MatchService {
         return tab;
     }
 
-    /*
-     * Metodo para poner carta numerica
-     */
-    public Partida poner(String id, String color, int numero, String idUser) {
-        Partida partida = this.tableros.get(id);
-        if (partida == null)
+    public Tablero poner(String id, Map<String, Object> info, String idUser) {
+        Tablero tablero = this.tableros.get(id);
+        if (tablero == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encuentra esta partida");
         try{
-            Carta carta = new Carta(numero, color);
-            partida.poner(carta,idUser);
-        }catch(MovimientoIlegalException e){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-        }catch(NotImplementedException e){
+            tablero.poner(info,idUser);
+        }catch(Exception e){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         }
-        return partida;
+        return tablero;
     }
 
-    /*
-     * Metodo para poner carta de bloqueo, cambio de color o revertir orden
-     */
-    public Partida poner(String id, char tipo, String color, String idUser) {
-        Partida partida = this.tableros.get(id);
-        if (partida == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encuentra esta partida");
-        try{
-            Carta carta = new Carta(tipo, color);
-            partida.poner(carta,idUser);
-        }catch(MovimientoIlegalException e){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-        }catch(NotImplementedException e){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+    public String[] getIds(String tipo){
+        String[] partidas = new String[tablerosPendientes.size()];
+        for (int i=0; i<tablerosPendientes.size(); i++) {
+            if (tablerosPendientes.get(i).getClass().getSimpleName().equals(tipo))
+                partidas[i] = tablerosPendientes.get(i).getId();
         }
-        return partida;
+        return partidas;
     }
 
-    /*
-     * Metodo para poner carta de suma
-     */
-    public Partida poner(String id, String tipo, String color, int cantidad, String idUser) {
-        Partida partida = this.tableros.get(id);
-        if (partida == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encuentra esta partida");
-        try{
-            Carta carta = new Carta(tipo, color, cantidad);
-            partida.poner(carta,idUser);
-        }catch(MovimientoIlegalException e){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-        }catch(NotImplementedException e){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-        }
-        return partida;
-    }
-
-
-    public Partida findById(String id) {
+    public Tablero findById(String id) {
         return this.tableros.get(id);
     }
-
-    public Partida poner(String id, String color, String tipo, String idUser) {
-        return null;
-    }
-    
 }

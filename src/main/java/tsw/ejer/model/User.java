@@ -1,10 +1,6 @@
 package tsw.ejer.model;
 
-
 import java.util.UUID;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,7 +12,7 @@ import tsw.ejer.ws.SessionWS;
 
 @Entity
 @Table(indexes = {
-    @Index(columnList = "email", unique = true)
+        @Index(columnList = "email", unique = true)
 })
 public class User {
     @Id
@@ -32,15 +28,12 @@ public class User {
     @Column(nullable = false)
     private String password;
     @Transient
-	private SessionWS sessionWS;
-	@Transient
-	private String token;
-
-   
+    private SessionWS sessionWS;
+    @Transient
+    private String token;
 
     public User() {
         this.id = UUID.randomUUID().toString();
-        
     }
 
     public void setNombre(String n) {
@@ -70,15 +63,13 @@ public class User {
     public String getId() {
         return id;
     }
+
     public void setSessionWS(SessionWS sessionWS) {
-		this.sessionWS=sessionWS;
-		
-	}
+        this.sessionWS = sessionWS;
+    }
 
-	public void setToken(String token) {
-		this.token=token;
-		
-	}
+    public void setToken(String token) {
+        this.token = token;
+    }
 
-    
 }
