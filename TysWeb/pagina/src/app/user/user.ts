@@ -1,23 +1,25 @@
 export class user{
-    datosLogin(email:string) {
+    datosLogin(email:string, pass:string) {
         this.email = email;
+        this.pwd = pass;
+        this.pwd2 = pass;
     }
     nombre:string
     email:string
-    pwd1:string
+    pwd:string
     pwd2:string
 
     constructor(){
         this.nombre="",
         this.email="",
-        this.pwd1="",
+        this.pwd="",
         this.pwd2=""
     }
 
     datosRegistro(nombre:string, email:string, pwd1:string, pwd2:string){
         this.nombre=nombre;
         this.email=email;
-        this.pwd1=pwd1;
+        this.pwd=pwd1;
         this.pwd2=pwd2;
     }
 }

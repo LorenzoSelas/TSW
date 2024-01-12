@@ -9,6 +9,16 @@ import { client } from 'websocket';
 })
 
 export class JuegosComponent {
+Nueva() {
+  this.http.get("http://localhost:8080/matches/start?tipo=" + this.juego).subscribe( 
+  (data) => {
+    this.listaDeJuegos = data;
+  },
+  (error) => {
+    console.error('Error al obtener las salas:', error);
+  }
+);
+}
   juego: string = ''
   listaDeJuegos: any = [];
 
@@ -20,7 +30,7 @@ export class JuegosComponent {
   }
 
   actualizarLista() {
-    this.http.get("http://localhost:8080/matches/Raya/ids").subscribe( 
+    this.http.get("http://localhost:8080/matches/" + this.juego + "/ids").subscribe( 
       (data) => {
         this.listaDeJuegos = data;
       },
@@ -28,9 +38,6 @@ export class JuegosComponent {
         console.error('Error al obtener las salas:', error);
       }
     ); //peticion http para recoger las salas abiertas 
-
-    
-    this.listaDeJuegos.push("Nueva Sala")
   }
 }
 

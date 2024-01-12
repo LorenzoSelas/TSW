@@ -13,12 +13,12 @@
       aria-haspopup="true" mat-icon-button class="mat-menu-trigger buton-login transparent-bg"
         #menuTrigger="matMenuTrigger"
         (mouseover)="openMyMenu(menuTrigger)"
-        (mouseleave)="closeMyMenu(menuTrigger)"
         [matMenuTriggerFor]="myMenu"
       >
         <img class="logo-img" src="assets/user.png" />
       </button>
-      <mat-menu #myMenu="matMenu" [overlapTrigger]="false">
+      <mat-menu #myMenu="matMenu" [overlapTrigger]="false"
+      (mouseleave)="closeMyMenu(menuTrigger)">
         <ng-template matMenuContent>
           <button mat-menu-item routerLink="/Login">Login</button>
           <button mat-menu-item routerLink="/Register">Registrarse</button>
@@ -28,5 +28,11 @@
     </span>
   </div>
 </header>
-
 <router-outlet></router-outlet>
+
+<div id="chat-box"></div>
+<div>
+  <input type="text" id="mensaje" placeholder="Texto del Mensaje">
+  <input type="text" id="destinatario" placeholder="Destinatario">
+    <button (click)="sendMessage()">Send</button>
+</div>

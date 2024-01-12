@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef } from '@angular/core';
 import { UsersService } from './users.service';
 import { MatMenuTrigger } from '@angular/material/menu';
 
@@ -9,13 +9,33 @@ import { MatMenuTrigger } from '@angular/material/menu';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  userName = UsersService;
+  socket = new WebSocket("ws://127.0.0.1:8080/wsUsuarios");
   title = 'juegos';
   position?: GeolocationPosition
   TemperaturaMax?: number
   TemperaturaMin?: number
   ciudad?: String
 
-  constructor() {
+  constructor(private userService: UsersService, private el: ElementRef) {
+    this.userService = userService;
+    this.socket.onopen = function(event){
+      console.log("Conexión establecida", event);
+    }
+    this.socket.onmessage = function(event){
+      const chatBox = document.getElementById("chat-box") as HTMLDivElement;
+      const message = document.createElement("p");
+      message.textContent = event.data;
+      chatBox.appendChild(message);
+    }
+    this.socket.onclose = function(){
+      console.log("Conexión perdida.")
+    }
+
+    this.socket.addEventListener("close", (event: CloseEvent) => {
+      console.log("WebSocket connection closed:", event);
+    });
+
     navigator.geolocation.getCurrentPosition(
       position => {
         this.position = position
@@ -79,6 +99,25 @@ export class AppComponent {
     }
     req.open("GET", url)
     req.send()
+  }
+
+  sendMessage() {
+    const mensajeElement: HTMLInputElement = this.el.nativeElement.querySelector('#mensaje');
+    const destinatarioElement: HTMLInputElement = this.el.nativeElement.querySelector('#destinatario');
+
+    // Accede a los valores de los elementos
+    const mensaje: string = mensajeElement.value;
+    const destinatario: string = destinatarioElement.value;
+
+    // Haz lo que necesites con los valores de los campos
+    console.log('Mensaje:', mensaje);
+    console.log('Destinatario:', destinatario);
+    let msg = {
+      tipo : "MENSAJE PRIVADO",
+      destinatario : destinatario,
+      texto : mensaje
+    }
+    this.socket.send(JSON.stringify(msg))
   }
 }
 /*userName = UserSService;

@@ -23,9 +23,9 @@ export class LoginComponent {
   }
 
   onSubmit() {
+    this.usuario.datosLogin(this.loginForm.get('Email')?.value, this.loginForm.get('Pwd')?.value);
     this.usersService.login(this.usuario).subscribe((data) => {
       console.log(JSON.stringify(data));
-      this.usuario.datosLogin(this.loginForm.get('Email')?.value);
     })
   }
 
