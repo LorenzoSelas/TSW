@@ -1,8 +1,11 @@
-import { Component, Inject } from '@angular/core';
+
 import { MatList } from '@angular/material/list';
 import { raya } from './raya';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
+import { Component, ViewChild, ElementRef } from '@angular/core';
+import { RayaService } from './raya.service';
+import { ManagerService } from '../manager.service';
 
 @Component({
   selector: 'app-raya',
@@ -12,10 +15,12 @@ import { ActivatedRoute } from '@angular/router';
 
 export class RayaComponent {
   id: string = '';
+  tablero: string= '';
   partida:raya;
   poner:Boolean;
+  mostrarElemento: boolean =false;
 
-  constructor(private http: HttpClient, private route: ActivatedRoute){
+  constructor(private http: HttpClient, private route: ActivatedRoute, private rayaService: RayaService, private manager:ManagerService){
     this.partida = new raya;
     this.poner = new Boolean;
   }
@@ -29,6 +34,20 @@ export class RayaComponent {
     });
   }
 
+  iniciar(){
+    this.mostrarElemento = !this.mostrarElemento;
+  }
+  ponerCasilla( columna: number) {
+    this.rayaService.ponerCasilla(this.manager.idPartida!, columna).subscribe(
+      _response => {
+        console.log("Se ha puesto una casilla");
+        this.ocuparCelda(1,columna);
+      },
+      _error => {
+        console.log("Error al realizar la petición al servidor")
+      }
+    );
+  }
   ocuparCelda(row: number,col: number){
     if(this.puedoPoner()){
       this.partida.celdas[row][col] = 'X'

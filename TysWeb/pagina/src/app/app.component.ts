@@ -1,7 +1,7 @@
 import { Component, ElementRef } from '@angular/core';
 import { UsersService } from './users.service';
 import { MatMenuTrigger } from '@angular/material/menu';
-
+import { Router } from '@angular/router'; // Importa el servicio Router
 
 @Component({
   selector: 'app-root',
@@ -17,7 +17,7 @@ export class AppComponent {
   TemperaturaMin?: number
   ciudad?: String
 
-  constructor(private userService: UsersService, private el: ElementRef) {
+  constructor(private userService: UsersService, private el: ElementRef, private router: Router) {
     this.userService = userService;
     this.socket.onopen = function(event){
       console.log("Conexión establecida", event);
@@ -119,26 +119,11 @@ export class AppComponent {
     }
     this.socket.send(JSON.stringify(msg))
   }
-}
-/*userName = UserSService;
 
-pwd = "1234";
-ws? = WebSocket;
-constructor(private userService: UserSService){
-  this.userService = userService;*/
-
-
-/*login(){
-  let info= {
-    email: this.userName,
-    pwd: this.pwd
+  navigateToJuegos() {
+    this.router.navigate(['/juegos']); // Navega a la ruta del componente "Juegos"
   }
-  this.userService.login(info).subscribe(
-    result=> {
-      //this.ws = new WebSocket("ws://localhost:8080/wsGames?httpId=" + result.httpId)
-    },
-    Error =>
-      alert(Error)
-  )
+  isHomeRoute(): boolean {
+    return this.router.url === '/';
+  }
 }
-}*/

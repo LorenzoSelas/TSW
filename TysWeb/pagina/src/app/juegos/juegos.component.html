@@ -1,7 +1,9 @@
 <h1 *ngIf="!juego">Los juegos que tenemos en este momento son los siguientes:</h1>
 
-<button (click)="setearJuego('Tablero4r')" *ngIf="!juego"><img src="assets/raya.jpg"></button>
-<button (click)="setearJuego('Uno')" *ngIf="!juego"><img src="assets/uno.jpg"></button>
+<div class="juegos-container">
+  <button (click)="setearJuego('Tablero4r')" *ngIf="!juego"><img src="assets/raya.jpg"></button>
+  <button (click)="setearJuego('Uno')" *ngIf="!juego"><img src="assets/uno.jpg"></button>
+</div>
 
 <mat-list *ngIf="juego" role="list" id="salas">
   <table class="tabla-salas">
@@ -20,5 +22,10 @@
     </tbody>
   </table>
 </mat-list>
-<button (click)="Nueva()" *ngIf="juego">Nueva Sala</button>
+<div class="botones_partida">
+  <button class="nueva_partida" (click)="Nueva()" *ngIf="juego">Nueva Sala</button>
+  <button class="borrar_partida" (click)="BorrarPartidas()" *ngIf="juego">Borrar partidas</button>
+</div>
+
+
 <router-outlet></router-outlet>

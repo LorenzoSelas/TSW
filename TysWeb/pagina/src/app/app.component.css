@@ -25,3 +25,39 @@
     border: none !important;
     box-shadow: none !important;
 }
+
+.menu_juegos{
+  display:flex;
+  align-items:center;
+  justify-content: center;
+  padding:15px;
+  inline-size: 100%;
+  margin-top: 30px;
+}
+
+.menu_juegos button{
+  height:50px;
+  width:200px;
+  border-radius: 15px;
+  background-color: #E2322C;
+  box-shadow: 2px 2px 2px 1px rgba(225, 14, 14, 0.2);
+  font-size: 20px;
+  font-weight: 500;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  color: white;
+}
+.menu_juegos button:hover{
+  background-color: #E45644;
+  height:70px;
+  width:250px;
+  font-weight: bolder;
+  font-size: 40px;
+}
+
+
+.menu_juegos p{
+  font-size: 30px;
+  font-weight: 800;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  
+}

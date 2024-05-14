@@ -19,8 +19,9 @@ public class Tablero4r extends Tablero {
     @Override
     public void poner(Map<String, Object> info, String idUser) throws Exception {
         int column = -1;
+        
         try {
-            column = (int) info.get("columna");
+            column = (int) info.get("column");
         } catch (Exception e) {
             throw new Exception("Parametros no reconocidos para este tipo de juego.");
         }
@@ -90,7 +91,7 @@ public class Tablero4r extends Tablero {
 
     @Override
     public void finalizar() {
-        // TODO Auto-generated method stub
+        // TODO Registrar partida en base de datos  y notificar a los usuarios que se ha terminado el juego
         throw new UnsupportedOperationException("Unimplemented method 'finalizar'");
     }
 }

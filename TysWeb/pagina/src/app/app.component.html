@@ -36,3 +36,8 @@
   <input type="text" id="destinatario" placeholder="Destinatario">
     <button (click)="sendMessage()">Send</button>
 </div>
+
+<div *ngIf="isHomeRoute()" class="menu_juegos">
+  <p>Ir a sala de juegos</p>
+  <button (click)="navigateToJuegos()">Juegos</button> <!-- Llama al método navigateToJuegos() -->
+</div>

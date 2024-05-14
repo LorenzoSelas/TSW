@@ -7,11 +7,11 @@ import { JuegosComponent } from './juegos/juegos.component';
 import { UnoComponent } from './uno/uno.component';
 
 const routes: Routes = [
-  { path: 'Juegos', component: JuegosComponent},
+  { path: 'juegos', component: JuegosComponent},
   { path: 'Register', component: RegisterComponent},
   { path: 'Login', component: LoginComponent},
   { path: 'Tablero4r/:id', component: RayaComponent},
-  { path: 'Uno/:id', component: UnoComponent},
+  { path: 'Uno/:id', component: UnoComponent}
 ];
 
 @NgModule({

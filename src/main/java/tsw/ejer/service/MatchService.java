@@ -39,17 +39,18 @@ public class MatchService {
             
             tab.addUser(user);
             this.tablerosPendientes.add(tab);
+            tab.iniciar();
             this.tableros.put(tab.getId(),tab);
         } else {
             tab = tablerosPendientes.get(0);
             tab.addUser(user);
-            this.tablerosPendientes.add(tab);
+            this.tablerosPendientes.remove(tab);
             tab.iniciar();
         }
         return tab;
     }
 
-    public Tablero poner(String id, Map<String, Object> info, String idUser) {
+    public Tablero poner(String id, String idUser, Map<String, Object> info) {
         Tablero tablero = this.tableros.get(id);
         if (tablero == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encuentra esta partida");
@@ -61,6 +62,7 @@ public class MatchService {
         return tablero;
     }
 
+    // TODO Realizar cambios en la clase getIds. Devolver los tipos de tableros, no el tablero genérico
     public String[] getIds(String tipo){
         String[] partidas = new String[tablerosPendientes.size()];
         for (int i=0; i<tablerosPendientes.size(); i++) {

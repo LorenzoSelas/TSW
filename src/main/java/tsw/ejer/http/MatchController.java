@@ -21,7 +21,7 @@ import tsw.ejer.model.User;
 import tsw.ejer.service.MatchService;
 import jakarta.servlet.http.HttpSession;
 
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials="true")
 @RestController
 @RequestMapping("matches")
 public class MatchController {
@@ -44,11 +44,18 @@ public class MatchController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
-    @PostMapping("poner")
-    public Tablero poner(HttpSession session, @RequestBody Map<String, Object> info){
-        String id = info.get("id").toString();
-        String idUser = session.getAttribute("userId").toString();
-        return this.matchService.poner(id,info,idUser);
+    //TODO arreglar error 500 al lanzar una petición de poner ficha en tablero. Necesaria la recuperación del id del usuario de la base de datos
+    @PostMapping("poner/{id}")
+    public Tablero poner(@PathVariable String id, HttpSession session, @RequestBody Map<String, Object> info){
+        
+    	//String idUser = info.get("userId").toString();
+    	 User user;
+         try{
+             user = this.userDAO.findById(session.getAttribute("userId").toString()).get();
+         } catch (Exception e){
+             user = new User();
+         }
+        return this.matchService.poner(id,user.getId(),info);
     }
 
     @GetMapping("meToca")

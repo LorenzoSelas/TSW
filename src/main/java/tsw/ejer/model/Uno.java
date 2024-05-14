@@ -148,10 +148,7 @@ public class Uno extends Tablero {
 
     }
 
-    /*
-     * Este método pone las cartas sobre la mesa si se puede
-     * He modificado los char a String para mayor claridad con los nombres y tipos
-     */
+    
     @Override
     public void poner(Map<String, Object> info, String idUser) throws Exception {
         String tipo = (String) info.get("tipo");

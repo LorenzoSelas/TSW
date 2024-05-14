@@ -1,11 +1,16 @@
 <p>raya works!</p>
 <p>{{ id }}</p>
 
-<!--
-<div *ngFor="let row of partida.celdas; let i=index">
-    <button (click)="ocuparCelda(i, j)" *ngFor="let col of row; let j=index">
-        <span *ngIf="col">{{col}}</span>
-        <span *ngIf="!col">&nbsp;</span>
-    </button>
-</div>
--->
+<button (click)="iniciar()">
+    Iniciar Partida
+</button>
+
+
+<ng-container *ngIf="mostrarElemento">
+    <div *ngFor="let row of partida.celdas; let i=index">
+        <button (click)="ponerCasilla(i)" *ngFor="let col of row; let j=index">
+            <span *ngIf="col">{{col}}</span>
+            <span *ngIf="!col">&nbsp;</span>
+        </button>
+    </div>
+</ng-container>
