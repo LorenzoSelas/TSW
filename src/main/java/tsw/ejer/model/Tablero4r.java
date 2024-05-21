@@ -12,6 +12,15 @@ public class Tablero4r extends Tablero {
     private char ultimoColor;
     private char ganador = Character.MIN_VALUE;
 
+    private Robot robot;
+
+    public void generarRobot(){
+        this.robot = new Robot(this);
+
+        Thread robotThread = new Thread(robot);
+        robotThread.start();
+    }
+
     public char[][] getCasillas() {
         return casillas;
     }

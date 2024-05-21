@@ -1,4 +1,7 @@
 /target/
+**.class
+./gitignore
 **/node_modules/
+**/cache/
 **/npm-debug.log
 **/yarn.lock

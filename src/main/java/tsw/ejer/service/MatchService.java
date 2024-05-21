@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import tsw.ejer.model.Tablero;
+import tsw.ejer.model.Tablero4r;
 import tsw.ejer.model.User;
 
 @Service
@@ -46,6 +47,9 @@ public class MatchService {
             tab.addUser(user);
             this.tablerosPendientes.remove(tab);
             tab.iniciar();
+        }
+        if (tab instanceof Tablero4r) {
+            ((Tablero4r)tab).generarRobot();
         }
         return tab;
     }

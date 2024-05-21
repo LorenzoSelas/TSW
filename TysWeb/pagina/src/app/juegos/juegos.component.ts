@@ -47,7 +47,7 @@ export class JuegosComponent {
     this.http.get("http://localhost:8080/matches/" + this.juego + "/ids").subscribe( 
       (data) => {
         this.listaDeJuegos = data;
-        console.log(this.juego, data.toString() )
+        console.log(this.juego, data )
       },
       (error) => {
         console.error('Error al obtener las salas:', error);
