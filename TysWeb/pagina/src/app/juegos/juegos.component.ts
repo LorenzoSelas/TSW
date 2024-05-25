@@ -14,7 +14,7 @@ export class JuegosComponent {
 
   juego: string = ''
   listaDeJuegos: any = [];
-  idPartida: string= '';
+  idPartida: string = '';
 
   constructor(private http: HttpClient, private router: Router, private manager: ManagerService) {
 

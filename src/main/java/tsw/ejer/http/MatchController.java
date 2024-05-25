@@ -37,6 +37,11 @@ public class MatchController {
             user = this.userDAO.findById(session.getAttribute("userId").toString()).get();
         } catch (Exception e){
             user = new User();
+            user.setEmail(user.getId());
+            user.setNombre(user.getId());
+            user.setPassword(user.getId());
+            this.userDAO.save(user);
+            session.setAttribute("userId", user.getId());
         }
         try {
             return this.matchService.newMatch(user, tipo);
@@ -54,6 +59,11 @@ public class MatchController {
              user = this.userDAO.findById(session.getAttribute("userId").toString()).get();
          } catch (Exception e){
              user = new User();
+             user.setEmail(user.getId());
+             user.setNombre(user.getId());
+             user.setPassword(user.getId());
+             this.userDAO.save(user);
+             session.setAttribute("userId", user.getId());
          }
         return this.matchService.poner(id,user.getId(),info);
     }

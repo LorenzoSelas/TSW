@@ -54,12 +54,12 @@ public class MatchService {
         return tab;
     }
 
-    public Tablero poner(String id, String idUser, Map<String, Object> info) {
+    public Tablero poner(String id, String userId, Map<String, Object> info) {
         Tablero tablero = this.tableros.get(id);
         if (tablero == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encuentra esta partida");
         try{
-            tablero.poner(info,idUser);
+            tablero.poner(info,userId);
         }catch(Exception e){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         }
