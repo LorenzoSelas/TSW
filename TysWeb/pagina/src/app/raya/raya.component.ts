@@ -30,7 +30,8 @@ export class RayaComponent {
     this.route.paramMap.subscribe((params: { get: (arg0: string) => any; }) => {
       const id = params.get('id');
       console.log('ID:', id);
-      // Haz lo que necesites con el id aquí
+      this.manager.idPartida = id;
+      this.manager.idUser =id;
     });
   }
 

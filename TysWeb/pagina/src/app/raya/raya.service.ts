@@ -1,15 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { ManagerService } from '../manager.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RayaService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private manager: ManagerService) { }
 
   ponerCasilla(idTablero: string, columna: number) {
     // Obtener el id del usuario de alguna manera, por ejemplo, desde el servicio de autenticación
-    const idUsuario = 'fd19c311-4c37-4f09-9a3d-e575dd85807c'; // Aquí obtén el id del usuario de alguna manera
+    //Intento de llamar al backend para obtener el id de sesion http
+    const idUsuario =this.http.get<any>('http://localhost:8080/users/usuario'); 
+    console.log(idUsuario);
   
     // Crear el cuerpo de la solicitud que incluya el id del usuario, el id del tablero y la columna
     const body = { userId: idUsuario, column: columna };

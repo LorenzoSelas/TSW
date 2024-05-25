@@ -96,4 +96,8 @@ public class UserController {
             session.removeAttribute("userId");
         }
     }
+    @GetMapping("usuario")
+    public String idUsuario(HttpSession session){
+        return session.getAttribute("userId").toString();
+    }
 }
