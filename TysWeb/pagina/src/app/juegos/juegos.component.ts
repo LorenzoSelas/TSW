@@ -26,7 +26,7 @@ export class JuegosComponent {
     this.router.navigate([juego]);
   }
   Nueva() {
-    this.http.get<any>("http://localhost:8080/matches/start?tipo=" + this.juego).subscribe( 
+    this.http.get<any>("http://localhost:8080/matches/start?tipo=" + this.juego, { withCredentials : true}).subscribe( 
     (data) => {
       this.listaDeJuegos = data;
       this.manager.idPartida = data.id;
@@ -44,7 +44,7 @@ export class JuegosComponent {
     
   }
   actualizarLista() {
-    this.http.get("http://localhost:8080/matches/" + this.juego + "/ids").subscribe( 
+    this.http.get("http://localhost:8080/matches/" + this.juego + "/ids", { withCredentials : true}).subscribe( 
       (data) => {
         this.listaDeJuegos = data;
         console.log(this.juego, data )
