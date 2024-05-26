@@ -8,9 +8,10 @@
 
 <ng-container *ngIf="mostrarElemento">
     <div *ngFor="let row of partida.celdas; let i=index">
-        <button (click)="ponerCasilla(i)" *ngFor="let col of row; let j=index">
-            <span *ngIf="col">{{col}}</span>
-            <span *ngIf="!col">&nbsp;</span>
-        </button>
+      <button (click)="ponerCasilla(i)" *ngFor="let col of row; let j=index">
+        <span *ngIf="col">{{col}}</span>
+        <span *ngIf="!col">&nbsp;</span>
+      </button>
     </div>
-</ng-container>
+  </ng-container>
+  

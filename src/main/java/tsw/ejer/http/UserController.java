@@ -100,4 +100,10 @@ public class UserController {
     public String idUsuario(HttpSession session){
         return session.getAttribute("userId").toString();
     }
+    
+    @PostMapping("ganador")
+    public void ganador(User user){
+        this.userService.ganador(user);
+    }
+    
 }

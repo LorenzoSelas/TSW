@@ -9,8 +9,6 @@ export class RayaService {
   constructor(private http: HttpClient, private manager: ManagerService) { }
 
   ponerCasilla(idTablero: string, columna: number) {
-    // Obtener el id del usuario de alguna manera, por ejemplo, desde el servicio de autenticación
-    //Intento de llamar al backend para obtener el id de sesion http
     const idUsuario =this.http.get<any>('http://localhost:8080/users/usuario'); 
     console.log(idUsuario);
   
@@ -22,6 +20,6 @@ export class RayaService {
   }
   puedoPoner(){
     // Enviar la solicitud POST al servidor
-    return this.http.get<any>('http://localhost:8080/meToca/', { withCredentials : true});
+    return this.http.get<any>('http://localhost:8080/matches/meToca/', { withCredentials : true});
   }
 }

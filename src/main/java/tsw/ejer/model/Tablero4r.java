@@ -5,13 +5,14 @@ import java.util.Random;
 
 import tsw.ejer.Excepcion.MovimientoIlegalException;
 //import lombok.Data;
+import tsw.ejer.dao.UserDAO;
 
 //@Data
 public class Tablero4r extends Tablero {
     private char[][] casillas = new char[6][7];
     private char ultimoColor;
     private char ganador = Character.MIN_VALUE;
-
+    private UserDAO userdao;
     private Robot robot;
 
     public void generarRobot(){
@@ -100,6 +101,8 @@ public class Tablero4r extends Tablero {
     @Override
     public void finalizar() {
         // TODO Registrar partida en base de datos  y notificar a los usuarios que se ha terminado el juego
+        this.ganador= this.jugadorConTurno.getId().charAt(0);
+        this.userdao.save(this.users.get(ganador));
         throw new UnsupportedOperationException("Unimplemented method 'finalizar'");
     }
 }

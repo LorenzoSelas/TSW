@@ -46,4 +46,8 @@ public class UserService {
     public void borrar(String id) {
         this.userDAO.deleteById(id);
     } 
+
+    public void ganador(User user){
+        this.userDAO.save(user);
+    }
 }
