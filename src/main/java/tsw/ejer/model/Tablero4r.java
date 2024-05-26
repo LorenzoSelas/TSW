@@ -38,7 +38,7 @@ public class Tablero4r extends Tablero {
             throw new MovimientoIlegalException("La partida esta finalizada, el ganador es: " + this.ganador);
         if (!jugadorConTurno.getId().equals(idUser))
             throw new MovimientoIlegalException("No es el turno de " + idUser);
-        for (int i = 5; i > 0; i--) {
+        for (int i = 5; i >= 0; i--) {
             if (this.casillas[i][column] == '\0') {
                 this.casillas[i][column] = ultimoColor;
                 if (comprobarFin(i, column)){
@@ -54,25 +54,24 @@ public class Tablero4r extends Tablero {
 
     private boolean comprobarFin(int fila, int columna) {
         if (verificarLinea(fila, 0, 0, 1)) {
-            return false;
+            finalizar();
         }
 
         // Verificar verticalmente
         if (verificarLinea(0, columna, 1, 0)) {
-            return false;
+            finalizar();
         }
 
         // Verificar diagonal hacia arriba (\)
         if (verificarLinea(fila, columna, -1, -1)) {
-            return false;
+            finalizar();
         }
 
         // Verificar diagonal hacia abajo (/)
         if (verificarLinea(fila, columna, 1, -1)) {
-            return false;
+            finalizar();
         }
 
-        finalizar();
         return false;
     }
 

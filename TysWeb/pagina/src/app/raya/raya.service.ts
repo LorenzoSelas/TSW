@@ -20,4 +20,8 @@ export class RayaService {
     // Enviar la solicitud POST al servidor
     return this.http.post<any>('http://localhost:8080/matches/poner/'+idTablero, body, { withCredentials : true});
   }
+  puedoPoner(){
+    // Enviar la solicitud POST al servidor
+    return this.http.get<any>('http://localhost:8080/meToca/', { withCredentials : true});
+  }
 }

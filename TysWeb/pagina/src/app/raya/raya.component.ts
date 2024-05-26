@@ -15,12 +15,12 @@ import { ManagerService } from '../manager.service';
 
 export class RayaComponent {
   id: string = '';
-  tablero: string= '';
-  partida:raya;
-  poner:Boolean;
-  mostrarElemento: boolean =false;
+  tablero: string = '';
+  partida: raya;
+  poner: Boolean;
+  mostrarElemento: boolean = false;
 
-  constructor(private http: HttpClient, private route: ActivatedRoute, private rayaService: RayaService, private manager:ManagerService){
+  constructor(private http: HttpClient, private route: ActivatedRoute, private rayaService: RayaService, private manager: ManagerService) {
     this.partida = new raya;
     this.poner = new Boolean;
   }
@@ -31,32 +31,36 @@ export class RayaComponent {
       const id = params.get('id');
       console.log('ID:', id);
       this.manager.idPartida = id;
-      this.manager.idUser =id;
+      this.manager.idUser = id;
     });
   }
 
-  iniciar(){
+  iniciar() {
     this.mostrarElemento = !this.mostrarElemento;
   }
-  ponerCasilla( columna: number) {
+  ponerCasilla(columna: number) {
     this.rayaService.ponerCasilla(this.manager.idPartida!, columna).subscribe(
       _response => {
         console.log("Se ha puesto una casilla");
-        this.ocuparCelda(1,columna);
+        this.ocuparCelda(columna);
       },
       _error => {
         console.log("Error al realizar la petición al servidor")
       }
     );
   }
-  ocuparCelda(row: number,col: number){
-    if(this.puedoPoner()){
-      this.partida.celdas[row][col] = 'X'
-    }else{
+  ocuparCelda(col: number) {
+    if (this.puedoPoner()) {
+      for (let i=5; i >= 0; i++){
+        if (this.partida.celdas[i][col] == '\0'){
+          
+        }
+      }
+    } else {
 
     }
   }
-  puedoPoner(): boolean{
+  puedoPoner(): boolean {
     return true
   }
 }
