@@ -14,7 +14,6 @@ public class Tablero4r extends Tablero {
     private char[][] casillas = new char[6][7];
     private char ultimoColor;
     private char ganador = Character.MIN_VALUE;
-
     private Robot robot;
 
     public void generarRobot(){
@@ -111,7 +110,6 @@ public class Tablero4r extends Tablero {
             Partida partida = new Partida(id, users, jugadorConTurno);
             pDAO.save(partida);
         }
-        // TODO Registrar partida en base de datos  y notificar a los usuarios que se ha terminado el juego
         throw new UnsupportedOperationException("Unimplemented method 'finalizar'");
     }
 }
