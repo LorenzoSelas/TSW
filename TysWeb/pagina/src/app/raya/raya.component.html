@@ -5,10 +5,9 @@
     Iniciar Partida
 </button>
 
-
 <ng-container *ngIf="mostrarElemento">
     <div *ngFor="let row of partida.celdas; let i=index">
-        <button (click)="ponerCasilla(i)" *ngFor="let col of row; let j=index">
+        <button (click)="ponerCasilla(j)" *ngFor="let col of row; let j=index">
             <span *ngIf="col">{{col}}</span>
             <span *ngIf="!col">&nbsp;</span>
         </button>

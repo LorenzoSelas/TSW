@@ -3,8 +3,11 @@ package tsw.ejer.model;
 import java.util.Map;
 import java.util.Random;
 
+import org.springframework.web.socket.TextMessage;
+
 import tsw.ejer.Excepcion.MovimientoIlegalException;
 //import lombok.Data;
+import tsw.ejer.Excepcion.TableNotInitializedException;
 
 //@Data
 public class Tablero4r extends Tablero {
@@ -27,6 +30,8 @@ public class Tablero4r extends Tablero {
 
     @Override
     public void poner(Map<String, Object> info, String idUser) throws Exception {
+        if (this.Iniciada == false)
+            throw new TableNotInitializedException("La Partida:" + this.id + " no está inicializada aún.");
         int column = -1;
         
         try {
@@ -45,6 +50,7 @@ public class Tablero4r extends Tablero {
                     ultimoColor = this.ultimoColor == 'R' ? 'A' : 'R';
                     this.jugadorConTurno = this.jugadorConTurno == this.users.get(0) ? this.users.get(1)
                             : this.users.get(0);
+                    //jugadorConTurno.getSessionWS().getSession().sendMessage(new TextMessage("Your Turn"));
                 }
                 return;
             }
@@ -72,7 +78,7 @@ public class Tablero4r extends Tablero {
             finalizar();
         }
 
-        return false;
+        return true;
     }
 
     private boolean verificarLinea(int fila, int columna, int deltaFila, int deltaColumna) {
@@ -95,10 +101,16 @@ public class Tablero4r extends Tablero {
     public void iniciar() {
         this.jugadorConTurno = this.users.get(new Random().nextInt(this.users.size()));
         ultimoColor = 'R';
+        this.Iniciada = true;
     }
 
     @Override
     public void finalizar() {
+        if(this.getJugadorConTurno().getId()!=this.getJugadorConTurno().getNombre()){
+            this.ganador = this.ultimoColor;
+            Partida partida = new Partida(id, users, jugadorConTurno);
+            pDAO.save(partida);
+        }
         // TODO Registrar partida en base de datos  y notificar a los usuarios que se ha terminado el juego
         throw new UnsupportedOperationException("Unimplemented method 'finalizar'");
     }

@@ -27,6 +27,7 @@ public class User {
 
     @Column(nullable = false)
     private String password;
+
     @Transient
     private SessionWS sessionWS;
     @Transient
@@ -72,4 +73,7 @@ public class User {
         this.token = token;
     }
 
+    public SessionWS getSessionWS(){
+        return this.sessionWS;
+    }
 }

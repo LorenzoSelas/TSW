@@ -5,14 +5,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import tsw.ejer.dao.PartidaDAO;
+
 public abstract class Tablero {
     protected String id;
     protected User jugadorConTurno;
     protected List<User> users;
+    boolean Iniciada;
+
+    @Autowired
+    protected PartidaDAO pDAO;
 
     public Tablero(){
         id = UUID.randomUUID().toString();
         this.users = new ArrayList<>();
+        this.Iniciada = false;
     }
 
     public String getId() {

@@ -40,7 +40,6 @@ public class MatchService {
             
             tab.addUser(user);
             this.tablerosPendientes.add(tab);
-            tab.iniciar();
             this.tableros.put(tab.getId(),tab);
         } else {
             tab = tablerosPendientes.get(0);

@@ -42,22 +42,24 @@ export class RayaComponent {
     this.rayaService.ponerCasilla(this.manager.idPartida!, columna).subscribe(
       _response => {
         console.log("Se ha puesto una casilla");
-        this.ocuparCelda(columna);
+        this.ocuparCelda(_response.casillas);
       },
       _error => {
         console.log("Error al realizar la petición al servidor")
       }
     );
   }
-  ocuparCelda(col: number) {
-    if (this.puedoPoner()) {
-      for (let i=5; i >= 0; i++){
-        if (this.partida.celdas[i][col] == '\0'){
-          
-        }
+  ocuparCelda(casillas: string[]) {
+    // Actualiza las celdas de la partida con las casillas recibidas
+    for (let i = 0; i < casillas.length; i++) {
+      for (let j = 0; j < casillas[i].length; j++) {
+        this.partida.celdas[i][j] = casillas[i][j];
       }
-    } else {
-
+    }
+  
+    // Imprime las celdas en la consola para depuración
+    for (let i = 0; i < this.partida.celdas.length; i++) {
+      console.log(`Fila ${i}: ${this.partida.celdas[i].join(' ')}`);
     }
   }
   puedoPoner(): boolean {
