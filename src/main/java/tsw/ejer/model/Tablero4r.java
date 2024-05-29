@@ -110,6 +110,5 @@ public class Tablero4r extends Tablero {
             Partida partida = new Partida(id, users, jugadorConTurno);
             pDAO.save(partida);
         }
-        throw new UnsupportedOperationException("Unimplemented method 'finalizar'");
     }
 }

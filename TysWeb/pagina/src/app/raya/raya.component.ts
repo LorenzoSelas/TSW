@@ -34,7 +34,7 @@ export class RayaComponent {
     });
 
     // Inicializar this.partida.celdas
-    this.partida.celdas = Array.from({ length: 6 }, () => Array(7).fill('\0'));
+    this.partida.celdas = Array.from({ length: 6 }, () => Array(7).fill(''));
   }
 
   iniciar() {
@@ -56,7 +56,11 @@ export class RayaComponent {
     // Actualiza las celdas de la partida con las casillas recibidas
     for (let i = 0; i < casillas.length; i++) {
       for (let j = 0; j < casillas[i].length; j++) {
-        this.partida.celdas[i][j] = casillas[i][j];
+        if (casillas[i][j] == "\0"){
+          this.partida.celdas[i][j] = "";
+        } else {
+          this.partida.celdas[i][j] = casillas[i][j];
+        }
       }
     }
   
@@ -66,23 +70,16 @@ export class RayaComponent {
     }
   }
 
-  puedoPoner(): boolean {
-    return true;
-  }
 
   //Posible llamada al servidor para poner, llamar a matches/meToca
-  /*puedoPoner(): Promise<Boolean> {
-    return new Promise(resolve => {
+  puedoPoner(){
       this.rayaService.puedoPoner().subscribe(
-        (response: boolean) => {
+        (response) => {
           this.poner = response;
-          resolve(this.poner);
         },
         _error => {
           console.log("Error al verificar si se puede poner.");
-          resolve(false);
         }
       );
-    });
-  }*/
+  }
 }

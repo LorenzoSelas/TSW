@@ -22,7 +22,7 @@ import tsw.ejer.model.User;
 import tsw.ejer.service.UserService;
 import jakarta.servlet.http.HttpSession;
 
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200",  allowCredentials="true")
 @RestController
 @RequestMapping("users")
 public class UserController {
@@ -103,7 +103,7 @@ public class UserController {
     
     @PostMapping("ganador")
     public void ganador(User user){
-        this.userService.ganador(user);
+        //this.userService.ganador(user);
     }
     
 }

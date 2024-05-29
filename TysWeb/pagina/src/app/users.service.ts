@@ -22,6 +22,6 @@ export class UsersService {
     return this.client.post<any>("http://localhost:8080/users/register", info)
   }
   login(info: any){
-    return this.client.put<string>("http://localhost:8080/users/login",info)
+    return this.client.put<string>("http://localhost:8080/users/login",info, {withCredentials : true})
   }
 }
