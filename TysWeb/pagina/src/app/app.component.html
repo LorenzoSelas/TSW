@@ -8,17 +8,15 @@
       </a>
     </span>
     <span class="login">
-      
       <button
-      aria-haspopup="true" mat-icon-button class="mat-menu-trigger buton-login transparent-bg"
+        aria-haspopup="true" mat-icon-button class="mat-menu-trigger buton-login transparent-bg"
         #menuTrigger="matMenuTrigger"
         (mouseover)="openMyMenu(menuTrigger)"
         [matMenuTriggerFor]="myMenu"
       >
         <img class="logo-img" src="assets/user.png" />
       </button>
-      <mat-menu #myMenu="matMenu" [overlapTrigger]="false"
-      (mouseleave)="closeMyMenu(menuTrigger)">
+      <mat-menu #myMenu="matMenu" [overlapTrigger]="false" (mouseleave)="closeMyMenu(menuTrigger)">
         <ng-template matMenuContent>
           <button mat-menu-item routerLink="/Login">Login</button>
           <button mat-menu-item routerLink="/Register">Registrarse</button>
@@ -28,16 +26,27 @@
     </span>
   </div>
 </header>
+
 <router-outlet></router-outlet>
 
 <div id="chat-box"></div>
 <div>
   <input type="text" id="mensaje" placeholder="Texto del Mensaje">
   <input type="text" id="destinatario" placeholder="Destinatario">
-    <button (click)="sendMessage()">Send</button>
+  <button (click)="sendMessage()">Send</button>
+</div>
+<br>
+<input type="text" #usuario placeholder="Tu nombre">
+<br>
+<span #estado>Desconectado</span>
+<button (click)="conectar()">Conectar</button>
+<div #zonaDeChat style="display: none;">
+  <input type="text" #destinatario placeholder="Destinatario">
+  <input type="text" #mensaje placeholder="Texto">
+  <button (click)="enviar()">Enviar</button>
 </div>
 
 <div *ngIf="isHomeRoute()" class="menu_juegos">
   <p>Ir a sala de juegos</p>
-  <button (click)="navigateToJuegos()">Juegos</button> <!-- Llama al método navigateToJuegos() -->
+  <button (click)="navigateToJuegos()">Juegos</button>
 </div>
