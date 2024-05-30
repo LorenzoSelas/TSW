@@ -35,7 +35,7 @@ export class AppComponent {
     this.socket.addEventListener("close", (event: CloseEvent) => {
       console.log("WebSocket connection closed:", event);
     });
-
+    
     navigator.geolocation.getCurrentPosition(
       position => {
         this.position = position
@@ -61,7 +61,7 @@ export class AppComponent {
       menuTrigger.closeMenu();
     }
   }
-
+  
   private obtenerElTiempo() {
     let self = this
     let url = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/" + this.position?.coords.latitude + "%2C%20" + this.position?.coords.longitude + "?unitGroup=metric&include=days%2Ccurrent%2Chours%2Calerts&key=KXU7XHBR76JNAVP8YJ33NQ938&contentType=json"

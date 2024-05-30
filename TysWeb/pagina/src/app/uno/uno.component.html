@@ -1,1 +1,25 @@
-<p>uno works!</p>
+<div class="iniciar">
+    <button class="boton-iniciar" (click)="iniciar()">
+        Iniciar Partida
+    </button>
+</div>
+<div class="mazo">
+    <button class="mazo-iniciar">
+        Mazo    
+    </button>
+    <span>Carta jugada </span>
+</div>
+<ng-container *ngIf="mostrarElemento">
+    <div class="jugador1" *ngFor="let row of partida.celdas1; let i=index">
+        <button (click)="ponerCasilla(j)" *ngFor="let col of row; let j=index">
+            <span *ngIf="col">{{col}}</span>
+            <span *ngIf="!col">&nbsp;</span>
+        </button>
+    </div>
+    <div class="jugador2" *ngFor="let row of partida.celdas2; let i=index">
+        <button (click)="ponerCasilla(j)" *ngFor="let col of row; let j=index">
+            <span *ngIf="col">{{col}}</span>
+            <span *ngIf="!col">&nbsp;</span>
+        </button>
+    </div>
+</ng-container>
