@@ -9,23 +9,23 @@
   <table class="tabla-salas">
     <thead>
       <tr>
-        <th mat-header="Id">Id</th>
-        <th mat-header="Jugadores">Jugadores</th>
+        <th>Id</th>
+        <th>Jugadores</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let id of listaDeJuegos">
         <td>
-          <mat-list-item routerLink="/{{ juego }}/{{ id }}">{{ id }}</mat-list-item>
+          <mat-list-item (click)="entrar(id)">{{ id }}</mat-list-item>
         </td>
       </tr>
     </tbody>
   </table>
 </mat-list>
+
 <div class="botones_partida">
   <button class="nueva_partida" (click)="Nueva()" *ngIf="juego">Nueva Sala</button>
   <button class="borrar_partida" (click)="BorrarPartidas()" *ngIf="juego">Borrar partidas</button>
 </div>
-
 
 <router-outlet></router-outlet>

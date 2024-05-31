@@ -13,9 +13,9 @@ interface Message {
 })
 export class WebSocketService {
   private ws: WebSocket | undefined;
-  conectar() {
+  conectar(nombre: string) {
     // Inicializar la conexión WebSocket
-    this.ws = new WebSocket("ws://localhost:8080/wsGames");
+    this.ws = new WebSocket("ws://localhost:8080/wsUsuarios?nombre=" + encodeURI(nombre));
 
     // Manejar eventos de WebSocket
     this.ws.onopen = () => {
@@ -34,15 +34,6 @@ export class WebSocketService {
     };
   }
 
-  private socket$: WebSocketSubject<Message>;
-  public messages$: Observable<Message>;
-
   constructor() {
-    this.socket$ = webSocket('ws://127.0.0.1:8080/wsUsuarios');
-    this.messages$ = this.socket$.asObservable();
-  }
-
-  sendMessage(msg: Message) {
-    this.socket$.next(msg);
   }
 }

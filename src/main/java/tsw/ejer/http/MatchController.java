@@ -49,11 +49,30 @@ public class MatchController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
-    //TODO arreglar error 500 al lanzar una petición de poner ficha en tablero. Necesaria la recuperación del id del usuario de la base de datos
+
+
+    @GetMapping("entrar")
+    public Tablero entrar(HttpSession session, @RequestParam String id){
+        User user;
+        try{
+            user = this.userDAO.findById(session.getAttribute("userId").toString()).get();
+        } catch (Exception e){
+            user = new User();
+            user.setEmail(user.getId());
+            user.setNombre(user.getId());
+            user.setPassword(user.getId());
+            this.userDAO.save(user);
+            session.setAttribute("userId", user.getId());
+        }
+        try {
+            return this.matchService.join(user, id);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+    
     @PostMapping("poner/{id}")
     public Tablero poner(@PathVariable String id, HttpSession session, @RequestBody Map<String, Object> info){
-        
-    	//String idUser = info.get("userId").toString();
     	 User user;
          try{
              user = this.userDAO.findById(session.getAttribute("userId").toString()).get();

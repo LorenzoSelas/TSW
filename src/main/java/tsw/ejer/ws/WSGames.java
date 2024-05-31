@@ -3,11 +3,9 @@ package tsw.ejer.ws;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.BinaryMessage;
 import org.springframework.web.socket.CloseStatus;
@@ -21,14 +19,12 @@ import org.json.JSONObject;
 @Component
 public class WSGames extends TextWebSocketHandler {
 	private List<WebSocketSession> sessions = new ArrayList<>();
-	private Map<String, SessionWS> sessionsByNombre = new HashMap<>();
-	private Map<String, SessionWS> sessionsById = new HashMap<>();
 	private Map<String, List<WebSocketSession>> sessionsByRoom = new HashMap<>();
 
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		System.out.println("Conexión establecida:" + session.getId());
-		
+
         URI uri = session.getUri();
         String path = uri.getPath();
 
@@ -47,9 +43,12 @@ public class WSGames extends TextWebSocketHandler {
 			}
             this.sessions.add(session);
         } else {
-            // Manejar el caso en el que no se pueda extraer el roomId de la URI
-            // Puedes cerrar la conexión o tomar alguna otra acción
-            session.close(CloseStatus.BAD_DATA.withReason("Invalid URI"));
+			try {
+				sessionsByRoom.get("General").add(session);
+			} catch (Exception e) {
+				List<WebSocketSession> lista = new ArrayList<>();
+				sessionsByRoom.put("General", lista);
+			}
         }
 	}
 
@@ -64,8 +63,6 @@ public class WSGames extends TextWebSocketHandler {
 			nombre = jso.getString("nombre");
 			SessionWS sesionWS = new SessionWS(nombre, session);
 			sesionWS.setNombre(nombre);
-			this.sessionsByNombre.put(nombre, sesionWS);
-			this.sessionsById.put(session.getId(), sesionWS);
 			this.difundir(session, "tipo", "NUEVO USUARIO", "nombre", nombre);
 			this.bienvenida(session);
 			return;
@@ -83,13 +80,13 @@ public class WSGames extends TextWebSocketHandler {
 	private void bienvenida(WebSocketSession sessionDelTipoQueAcabaDeLegar) {
 		JSONObject jso = new JSONObject().put("tipo", "BIENVENIDA");
 		JSONArray jsaUsuarios = new JSONArray();
-
+/* 
 		Collection<SessionWS> usuariosConectados = this.sessionsByNombre.values();
 		for (SessionWS usuarioConectado : usuariosConectados) {
 			if (usuarioConectado.getSession() != sessionDelTipoQueAcabaDeLegar) {
 				jsaUsuarios.put(usuarioConectado.getNombre());
 			}
-		}
+		}*/
 		jso.put("usuarios", jsaUsuarios);
 		try {
 			sessionDelTipoQueAcabaDeLegar.sendMessage(new TextMessage(jso.toString()));
@@ -120,13 +117,9 @@ public class WSGames extends TextWebSocketHandler {
 
 	private void eliminarSesion(WebSocketSession session) {
 		this.sessions.remove(session);
-		SessionWS sessionWS = this.sessionsById.remove(session.getId());
-		this.sessionsByNombre.remove(sessionWS.getNombre());
 	}
 
 	public void afterConnectionClosed(WebSocketSession sessions, CloseStatus status) throws Exception {
-		this.sessionsById.remove(sessions.getId());
-		this.sessionsByNombre.remove(sessions.getId()).getNombre();
 	}
 
 	@Override

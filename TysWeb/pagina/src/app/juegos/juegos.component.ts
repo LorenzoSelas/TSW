@@ -22,16 +22,28 @@ export class JuegosComponent {
 
   setearJuego(juego: string) {
     this.juego = juego;
+    this.router.navigate([this.juego]);
     this.actualizarLista();
-    this.router.navigate([juego]);
+  }
+
+  entrar(id: string){
+    this.http.get<any>("http://localhost:8080/matches/entrar?id=" + id, { withCredentials : true}).subscribe( 
+    (data) => {
+      this.manager.idPartida = id;
+      this.router.navigate([this.juego +"/"+ data.id]);
+      console.log(data.id);
+    },
+    (error) => {
+      console.error('Error al entrar en la sala:', error);
+    }
+  ); 
   }
   Nueva() {
     this.http.get<any>("http://localhost:8080/matches/start?tipo=" + this.juego, { withCredentials : true}).subscribe( 
     (data) => {
-      this.listaDeJuegos = data;
       this.manager.idPartida = data.id;
-      this.actualizarLista();
-      console.log(this.juego);
+      this.router.navigate([this.juego +"/"+ data.id]);
+      console.log(data.id);
     },
     (error) => {
       console.error('Error al obtener las salas:', error);

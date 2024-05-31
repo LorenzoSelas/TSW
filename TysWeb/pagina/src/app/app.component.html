@@ -30,15 +30,9 @@
 <router-outlet></router-outlet>
 
 <div id="chat-box"></div>
-<div>
-  <input type="text" id="mensaje" placeholder="Texto del Mensaje">
-  <input type="text" id="destinatario" placeholder="Destinatario">
-  <button (click)="sendMessage()">Send</button>
-</div>
-<br>
 <input type="text" #usuario placeholder="Tu nombre">
 <br>
-<span #estado>Desconectado</span>
+<span #estado>{{estado}}</span>
 <button (click)="conectar()">Conectar</button>
 <div #zonaDeChat style="display: none;">
   <input type="text" #destinatario placeholder="Destinatario">

@@ -25,10 +25,9 @@ export class UnoComponent {
     this.mostrarElemento = !this.mostrarElemento;
   }
   ponerCasilla(columna: number) {
-    this.unoService.ponerCasilla(this.manager.idPartida!, columna).subscribe(
+    this.unoService.ponerCarta(this.manager.idPartida!).subscribe(
       _response => {
-        console.log("Se ha puesto una casilla");
-        this.ocuparCelda(_response.casillas);
+        console.log("Se ha puesto una carta");
       },
       _error => {
         console.log("Error al realizar la petición al servidor");

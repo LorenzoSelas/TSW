@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import tsw.ejer.Excepcion.TableNotInitializedException;
 import tsw.ejer.model.Tablero;
 import tsw.ejer.model.Tablero4r;
 import tsw.ejer.model.User;
@@ -65,7 +66,6 @@ public class MatchService {
         return tablero;
     }
 
-    // TODO Realizar cambios en la clase getIds. Devolver los tipos de tableros, no el tablero genérico
     public String[] getIds(String tipo){
         String[] partidas = new String[tablerosPendientes.size()];
         for (int i=0; i<tablerosPendientes.size(); i++) {
@@ -77,5 +77,21 @@ public class MatchService {
 
     public Tablero findById(String id) {
         return this.tableros.get(id);
+    }
+
+    public Tablero join(User user, String id) throws Exception{
+        try {
+            for (Tablero tablero : tablerosPendientes) {
+                if (tablero.getId().equals(id)){
+                    tablero.addUser(user);
+                    this.tablerosPendientes.remove(tablero);
+                    tablero.iniciar();
+                    return tablero;
+                }
+            }
+            throw new TableNotInitializedException("No se ha encontrado una partida con el id: " + id);
+        } catch (Exception ex){
+            throw new Exception("Ha ocurrido algun problema al buscar tu partida");
+        }
     }
 }

@@ -12,11 +12,11 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit, OnDestroy {
-  usuarioInput!: ElementRef;
-  estadoSpan!: ElementRef;
-  zonaDeChat!: ElementRef;
-  destinatarioInput!: ElementRef;
-  mensajeInput!: ElementRef;
+  @ViewChild('usuario', { static: false }) usuarioInput!: ElementRef;
+  @ViewChild('estado', { static: false }) estadoSpan!: ElementRef;
+  @ViewChild('zonaDeChat', { static: false }) zonaDeChat!: ElementRef;
+  @ViewChild('destinatario', { static: false }) destinatarioInput!: ElementRef;
+  @ViewChild('mensaje', { static: false }) mensajeInput!: ElementRef;
 
   userName = UsersService;
   title = 'juegos';
@@ -24,7 +24,6 @@ export class AppComponent implements OnInit, OnDestroy {
   TemperaturaMax?: number;
   TemperaturaMin?: number;
   ciudad?: String;
-  estado: string = 'Desconectado';
   private wsSubscription: Subscription | undefined;
   
   constructor(
@@ -50,33 +49,25 @@ export class AppComponent implements OnInit, OnDestroy {
   }
   
   ngOnInit() {
-    this.wsSubscription = this.wsService.messages$.subscribe(message => {
-      const chatBox = document.getElementById("chat-box") as HTMLDivElement;
-      const messageElement = document.createElement("p");
-      messageElement.textContent = JSON.stringify(message);
-      chatBox.appendChild(messageElement);
-
-      if (message.tipo === "NUEVO USUARIO") {
-        // Handle new user logic here
-      } else if (message.tipo === "MENSAJE PRIVADO") {
-        // Handle private message logic here
-      } else if (message.tipo === "BIENVENIDA") {
-        // Handle welcome message logic here
-      }
-    });
   }
   conectar() {
-    this.wsService.conectar(); 
-    this.estado = 'Conectando...';
-    console.log("Conectado");
+    const usuarioValue = this.usuarioInput.nativeElement.value;
+    if (usuarioValue) {
+      this.estadoSpan.nativeElement.value = 'Conectando...';
+      this.wsService.conectar(usuarioValue); 
+      this.estadoSpan.nativeElement.value = 'Conectado';
+      console.log("Conectado");
+    } else {
+      console.log("no hay usuario");
+    }
   }
   enviar() {
     let msg = {
-      tipo: "MENSAJE PRIVADO",
+      tipo: "MENSAJE GLOBAL",
       destinatario: this.destinatarioInput.nativeElement.value,
       texto: this.mensajeInput.nativeElement.value
     };
-    this.wsService.sendMessage(msg);
+    //this.wsService.sendMessage(msg);
   }
   ngOnDestroy() {
     if (this.wsSubscription) {
@@ -111,7 +102,7 @@ export class AppComponent implements OnInit, OnDestroy {
       destinatario : destinatario,
       texto : mensaje
     };
-    this.wsService.sendMessage(msg);
+    //this.wsService.sendMessage(msg);
   }
 
   navigateToJuegos() {
