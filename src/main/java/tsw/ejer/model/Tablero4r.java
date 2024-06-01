@@ -3,14 +3,16 @@ package tsw.ejer.model;
 import java.util.Map;
 import java.util.Random;
 
-import org.springframework.web.socket.TextMessage;
+import org.json.JSONObject;
 
 import tsw.ejer.Excepcion.MovimientoIlegalException;
 //import lombok.Data;
 import tsw.ejer.Excepcion.TableNotInitializedException;
+import tsw.ejer.ws.WSClient;
 
 //@Data
 public class Tablero4r extends Tablero {
+    private WSClient wsClient;
     private char[][] casillas = new char[6][7];
     private char ultimoColor;
     private char ganador = Character.MIN_VALUE;
@@ -49,7 +51,10 @@ public class Tablero4r extends Tablero {
                     ultimoColor = this.ultimoColor == 'R' ? 'A' : 'R';
                     this.jugadorConTurno = this.jugadorConTurno == this.users.get(0) ? this.users.get(1)
                             : this.users.get(0);
-                    //jugadorConTurno.getSessionWS().getSession().sendMessage(new TextMessage("Your Turn"));
+                            JSONObject jso = new JSONObject().put("tipo", "TURNO").put("userId", this.jugadorConTurno.getId());
+                            wsClient.sendMessage(jso);
+                            JSONObject jsoPart = new JSONObject().put("tipo", "ACTUALIZACION").put("idTablero", this.getId()).put("Tablero", this.getCasillas());
+                            wsClient.sendMessage(jsoPart);
                 }
                 return;
             }
@@ -100,6 +105,11 @@ public class Tablero4r extends Tablero {
     public void iniciar() {
         this.jugadorConTurno = this.users.get(new Random().nextInt(this.users.size()));
         ultimoColor = 'R';
+        try {
+            this.wsClient = new WSClient("ws://localhost:8080/wsGames/" + this.id + "?userId=Tablero" + this.getId(), null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         this.Iniciada = true;
     }
 

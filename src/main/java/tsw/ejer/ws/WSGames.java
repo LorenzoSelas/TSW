@@ -20,6 +20,7 @@ import org.json.JSONObject;
 public class WSGames extends TextWebSocketHandler {
 	private List<WebSocketSession> sessions = new ArrayList<>();
 	private Map<String, List<WebSocketSession>> sessionsByRoom = new HashMap<>();
+	private Map<String, WebSocketSession> sessionsById = new HashMap<>();
 
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -28,6 +29,12 @@ public class WSGames extends TextWebSocketHandler {
         URI uri = session.getUri();
         String path = uri.getPath();
 
+		Map<String, Object> attributes = session.getAttributes();
+        String userId = (String) attributes.get("userId");
+		if(userId==null)
+			userId = uri.getQuery().split("=")[1];
+
+		sessionsById.put(userId, session);
         // Extraer el roomId de la URI
         String[] pathSegments = path.split("/");
         if (pathSegments.length >= 3) {
@@ -65,6 +72,20 @@ public class WSGames extends TextWebSocketHandler {
 			sesionWS.setNombre(nombre);
 			this.difundir(session, "tipo", "NUEVO USUARIO", "nombre", nombre);
 			this.bienvenida(session);
+			return;
+		} else if (tipo.equals("TURNO")) {
+			String id = jso.getString("userId");
+			WebSocketSession ses = sessionsById.get(id);
+			TextMessage mes = new TextMessage("your turn");
+			ses.sendMessage(mes);
+			return;
+		}else if (tipo.equals("ACTUALIZACION")) {
+			String casillas = jso.getString("userId");
+			List<WebSocketSession> ses = sessionsByRoom.get(jso.getString("idTablero"));
+			TextMessage mes = new TextMessage(casillas);
+			for (WebSocketSession webSocketSession : ses) {
+				webSocketSession.sendMessage(mes);	
+			}
 			return;
 		} else {
 			try {

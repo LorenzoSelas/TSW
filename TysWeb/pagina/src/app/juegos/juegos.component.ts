@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { client } from 'websocket';
 import { Router } from '@angular/router';
 import { ManagerService } from '../manager.service';
+import { WebSocketService } from '../services/websocket.service';
 
 @Component({
   selector: 'app-juegos',
@@ -16,7 +17,7 @@ export class JuegosComponent {
   listaDeJuegos: any = [];
   idPartida: string = '';
 
-  constructor(private http: HttpClient, private router: Router, private manager: ManagerService) {
+  constructor(private http: HttpClient, private router: Router, private manager: ManagerService, private wsService: WebSocketService) {
 
   }
 
@@ -26,40 +27,42 @@ export class JuegosComponent {
     this.actualizarLista();
   }
 
-  entrar(id: string){
-    this.http.get<any>("http://localhost:8080/matches/entrar?id=" + id, { withCredentials : true}).subscribe( 
-    (data) => {
-      this.manager.idPartida = id;
-      this.router.navigate([this.juego +"/"+ data.id]);
-      console.log(data.id);
-    },
-    (error) => {
-      console.error('Error al entrar en la sala:', error);
-    }
-  ); 
+  entrar(id: string) {
+    this.http.get<any>("http://localhost:8080/matches/entrar?id=" + id, { withCredentials: true }).subscribe(
+      (data) => {
+        this.manager.idPartida = id;
+        this.wsService.entrarSala(id);
+        this.router.navigate([this.juego + "/" + data.id]);
+        console.log(data.id);
+      },
+      (error) => {
+        console.error('Error al entrar en la sala:', error);
+      }
+    );
   }
   Nueva() {
-    this.http.get<any>("http://localhost:8080/matches/start?tipo=" + this.juego, { withCredentials : true}).subscribe( 
-    (data) => {
-      this.manager.idPartida = data.id;
-      this.router.navigate([this.juego +"/"+ data.id]);
-      console.log(data.id);
-    },
-    (error) => {
-      console.error('Error al obtener las salas:', error);
-    }
-  ); 
-   
-  
+    this.http.get<any>("http://localhost:8080/matches/start?tipo=" + this.juego, { withCredentials: true }).subscribe(
+      (data) => {
+        this.manager.idPartida = data.id;
+        this.wsService.entrarSala(data.id);
+        this.router.navigate([this.juego + "/" + data.id]);
+        console.log(data.id);
+      },
+      (error) => {
+        console.error('Error al obtener las salas:', error);
+      }
+    );
+
+
   }
-  BorrarPartidas(){
-    
+  BorrarPartidas() {
+
   }
   actualizarLista() {
-    this.http.get("http://localhost:8080/matches/" + this.juego + "/ids", { withCredentials : true}).subscribe( 
+    this.http.get("http://localhost:8080/matches/" + this.juego + "/ids", { withCredentials: true }).subscribe(
       (data) => {
         this.listaDeJuegos = data;
-        console.log(this.juego, data )
+        console.log(this.juego, data)
       },
       (error) => {
         console.error('Error al obtener las salas:', error);

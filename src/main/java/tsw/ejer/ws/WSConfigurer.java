@@ -14,7 +14,7 @@ public class WSConfigurer implements WebSocketConfigurer{
     @Autowired
     private WSGames wsGamesHandler;
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-		registry.addHandler(wsGamesHandler, "/wsGames")
+		registry.addHandler(wsGamesHandler, "/wsGames/*")
                 .setAllowedOrigins("*")
                 .addInterceptors(new HttpSessionHandshakeInterceptor());
         

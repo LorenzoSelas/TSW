@@ -13,6 +13,7 @@ interface Message {
 })
 export class WebSocketService {
   private ws: WebSocket | undefined;
+  private wsroom: WebSocket | undefined;
   conectar(nombre: string) {
     // Inicializar la conexión WebSocket
     this.ws = new WebSocket("ws://localhost:8080/wsUsuarios?nombre=" + encodeURI(nombre));
@@ -29,6 +30,26 @@ export class WebSocketService {
     };
 
     this.ws.onclose = () => {
+      console.log('Desconectado');
+      // Aquí puedes realizar acciones adicionales cuando se cierra la conexión
+    };
+  }
+
+  entrarSala(id: string){
+    this.wsroom = new WebSocket("ws://localhost:8080/wsGames/" + id);
+
+    // Manejar eventos de WebSocket
+    this.wsroom.onopen = () => {
+      console.log('Conectado sala:' + id);
+      // Aquí puedes emitir eventos o realizar acciones adicionales cuando se abre la conexión
+    };
+
+    this.wsroom.onmessage = (event) => {
+      console.log('Mensaje recibido en:' + id, event.data);
+      // Aquí puedes procesar los mensajes recibidos del servidor WebSocket
+    };
+
+    this.wsroom.onclose = () => {
       console.log('Desconectado');
       // Aquí puedes realizar acciones adicionales cuando se cierra la conexión
     };

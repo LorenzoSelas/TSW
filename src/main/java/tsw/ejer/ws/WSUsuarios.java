@@ -23,7 +23,6 @@ import tsw.ejer.model.User;
 public class WSUsuarios extends TextWebSocketHandler {
 	private List<SessionWS> sessions = new ArrayList<>();
 	private Map<String, SessionWS> sessionsByNombre = new HashMap<>();
-	private Map<String, SessionWS> sessionsById = new HashMap<>();
 
 	@Autowired
 	private UserDAO userDAO;

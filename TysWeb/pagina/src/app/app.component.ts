@@ -13,7 +13,6 @@ import { Subscription } from 'rxjs';
 })
 export class AppComponent implements OnInit, OnDestroy {
   @ViewChild('usuario', { static: false }) usuarioInput!: ElementRef;
-  @ViewChild('estado', { static: false }) estadoSpan!: ElementRef;
   @ViewChild('zonaDeChat', { static: false }) zonaDeChat!: ElementRef;
   @ViewChild('destinatario', { static: false }) destinatarioInput!: ElementRef;
   @ViewChild('mensaje', { static: false }) mensajeInput!: ElementRef;
@@ -25,6 +24,7 @@ export class AppComponent implements OnInit, OnDestroy {
   TemperaturaMin?: number;
   ciudad?: String;
   private wsSubscription: Subscription | undefined;
+  estado: string = 'Desconectado';
   
   constructor(
     private userService: UsersService,
@@ -53,9 +53,9 @@ export class AppComponent implements OnInit, OnDestroy {
   conectar() {
     const usuarioValue = this.usuarioInput.nativeElement.value;
     if (usuarioValue) {
-      this.estadoSpan.nativeElement.value = 'Conectando...';
+      this.estado = 'Conectando...';
       this.wsService.conectar(usuarioValue); 
-      this.estadoSpan.nativeElement.value = 'Conectado';
+      this.estado = 'Conectado';
       console.log("Conectado");
     } else {
       console.log("no hay usuario");
