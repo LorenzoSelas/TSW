@@ -80,9 +80,9 @@ public class WSGames extends TextWebSocketHandler {
 			ses.sendMessage(mes);
 			return;
 		}else if (tipo.equals("ACTUALIZACION")) {
-			String casillas = jso.getString("userId");
+			JSONArray casillas = jso.getJSONArray("Tablero");
 			List<WebSocketSession> ses = sessionsByRoom.get(jso.getString("idTablero"));
-			TextMessage mes = new TextMessage(casillas);
+			TextMessage mes = new TextMessage(casillas.toString());
 			for (WebSocketSession webSocketSession : ses) {
 				webSocketSession.sendMessage(mes);	
 			}

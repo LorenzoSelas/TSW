@@ -34,15 +34,10 @@ public class Robot implements Runnable {
                     IWSListener listener = new IWSListener() {
                         @Override
                         public void notify(String message) {
-                            // Aquí puedes manejar el mensaje recibido del WebSocket
-                            System.out.println("Mensaje recibido: " + message);
 
                             // Parsear el mensaje como JSON si es necesario
                             try {
-                                JSONObject jsonMessage = new JSONObject(message);
-                                // Manejar el JSON según la estructura de tu mensaje
-                                String tipo = jsonMessage.getString("tipo");
-                                if (tipo.equals("TURNO") && jsonMessage.getString("userId").equals(userBot.getId())) {
+                                if (message.equals("your turn")) {
 			                        Jugar();
                                 }
                                 // Agrega más tipos de mensajes según sea necesario

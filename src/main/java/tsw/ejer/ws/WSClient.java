@@ -44,6 +44,7 @@ public class WSClient {
 	@OnError
 	public void onError(Session session, Throwable t) {
 		this.session = session;
+        t.printStackTrace();
 		latch.countDown();
 		//this.receiver.onResponseReceived(new JSONObject().put("type", "action").put("action", "WS_ERROR"));
 	}
@@ -51,7 +52,11 @@ public class WSClient {
     @OnMessage
     public void onText(String message, Session session) {
     	System.out.println(message);
-    	this.listener.notify(message);
+        try {
+    	    this.listener.notify(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         //JSONObject jso = new JSONObject(message);
         //String type = jso.getString("type");
         //if (type.equals("action"))
