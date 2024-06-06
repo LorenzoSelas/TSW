@@ -17,6 +17,9 @@ public class Robot implements Runnable {
     public Robot(Tablero4r p) {
         this.partida = p;
         userBot = new User();
+        userBot.setEmail(userBot.getId());
+        userBot.setNombre(userBot.getId());
+        userBot.setPassword(userBot.getId());
     }
 
     @Override

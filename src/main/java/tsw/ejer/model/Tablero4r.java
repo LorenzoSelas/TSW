@@ -7,17 +7,21 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import tsw.ejer.Excepcion.MovimientoIlegalException;
-//import lombok.Data;
 import tsw.ejer.Excepcion.TableNotInitializedException;
+import tsw.ejer.dao.PartidaDAO;
 import tsw.ejer.ws.WSClient;
 
-//@Data
 public class Tablero4r extends Tablero {
     private WSClient wsClient;
+    private PartidaDAO pDAO;
     private char[][] casillas = new char[6][7];
     private char ultimoColor;
     private char ganador = Character.MIN_VALUE;
     private Robot robot;
+
+    public void setPartidaDAO(PartidaDAO pDAO) {
+        this.pDAO = pDAO;
+    }
 
     public void generarRobot(){
         this.robot = new Robot(this);
@@ -49,14 +53,17 @@ public class Tablero4r extends Tablero {
             if (this.casillas[i][column] == '\0') {
                 this.casillas[i][column] = ultimoColor;
                 if (comprobarFin(i, column)){
+                    ganador = ultimoColor;
+                    finalizar();
+                } else {
                     ultimoColor = this.ultimoColor == 'R' ? 'A' : 'R';
                     this.jugadorConTurno = this.jugadorConTurno == this.users.get(0) ? this.users.get(1)
                             : this.users.get(0);
-                            this.wsClient = new WSClient("ws://localhost:8080/wsGames/" + this.id + "?userId=Tablero" + this.getId(), null);
-                            JSONObject jso = new JSONObject().put("tipo", "TURNO").put("userId", this.jugadorConTurno.getId());
-                            wsClient.sendMessage(jso);
-                            JSONObject jsoPart = new JSONObject().put("tipo", "ACTUALIZACION").put("idTablero", this.getId()).put("Tablero", new JSONArray(this.getCasillas()));
-                            wsClient.sendMessage(jsoPart);
+                    this.wsClient = new WSClient("ws://localhost:8080/wsGames/" + this.id + "?userId=Tablero" + this.getId(), null);
+                    JSONObject jso = new JSONObject().put("tipo", "TURNO").put("userId", this.jugadorConTurno.getId());
+                    wsClient.sendMessage(jso);
+                    JSONObject jsoPart = new JSONObject().put("tipo", "ACTUALIZACION").put("idTablero", this.getId()).put("Tablero", new JSONArray(this.getCasillas()));
+                    wsClient.sendMessage(jsoPart);
                 }
                 return;
             }
@@ -65,42 +72,52 @@ public class Tablero4r extends Tablero {
     }
 
     private boolean comprobarFin(int fila, int columna) {
-        if (verificarLinea(fila, 0, 0, 1)) {
-            finalizar();
+        // Verificar horizontalmente
+        if (verificarLinea(fila, columna, 0, 1) || verificarLinea(fila, columna, 0, -1)) {
+            return true;
         }
 
         // Verificar verticalmente
-        if (verificarLinea(0, columna, 1, 0)) {
-            finalizar();
+        if (verificarLinea(fila, columna, 1, 0)) {
+            return true;
         }
 
         // Verificar diagonal hacia arriba (\)
-        if (verificarLinea(fila, columna, -1, -1)) {
-            finalizar();
+        if (verificarLinea(fila, columna, 1, 1) || verificarLinea(fila, columna, -1, -1)) {
+            return true;
         }
 
         // Verificar diagonal hacia abajo (/)
-        if (verificarLinea(fila, columna, 1, -1)) {
-            finalizar();
+        if (verificarLinea(fila, columna, 1, -1) || verificarLinea(fila, columna, -1, 1)) {
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     private boolean verificarLinea(int fila, int columna, int deltaFila, int deltaColumna) {
-        int contador = 0;
-        for (int i = 0; i < 4; i++) {
-            int nuevaFila = fila + i * deltaFila;
-            int nuevaColumna = columna + i * deltaColumna;
+        int contador = 1;
+        int nuevaFila = fila + deltaFila;
+        int nuevaColumna = columna + deltaColumna;
 
-            if (nuevaFila >= 0 && nuevaFila < 6 && nuevaColumna >= 0 && nuevaColumna < 7 &&
-                casillas[nuevaFila][nuevaColumna] == ultimoColor) {
-                contador++;
-            } else {
-                break; // Interrumpir la verificación si no hay una coincidencia en esta dirección
-            }
+        while (nuevaFila >= 0 && nuevaFila < 6 && nuevaColumna >= 0 && nuevaColumna < 7 &&
+            casillas[nuevaFila][nuevaColumna] == ultimoColor) {
+            contador++;
+            nuevaFila += deltaFila;
+            nuevaColumna += deltaColumna;
         }
-        return contador == 4;
+
+        nuevaFila = fila - deltaFila;
+        nuevaColumna = columna - deltaColumna;
+
+        while (nuevaFila >= 0 && nuevaFila < 6 && nuevaColumna >= 0 && nuevaColumna < 7 &&
+            casillas[nuevaFila][nuevaColumna] == ultimoColor) {
+            contador++;
+            nuevaFila -= deltaFila;
+            nuevaColumna -= deltaColumna;
+        }
+
+        return contador >= 4;
     }
 
     @Override
@@ -108,14 +125,17 @@ public class Tablero4r extends Tablero {
         this.jugadorConTurno = this.users.get(new Random().nextInt(this.users.size()));
         ultimoColor = 'R';
         this.Iniciada = true;
+        
     }
-
-    @Override
+    //TODO no guarda la partida en bbdd a pesar de añadir los campos al robot. Mirar si existe previamente en la tabla users
     public void finalizar() {
-        if(this.getJugadorConTurno().getId()!=this.getJugadorConTurno().getNombre()){
-            this.ganador = this.ultimoColor;
-            Partida partida = new Partida(id, users, jugadorConTurno);
+        this.ganador=this.ultimoColor;
+        Partida partida = new Partida(id, users, jugadorConTurno);
+        try {
             pDAO.save(partida);
+        } catch (Exception e) {
+            e.printStackTrace();
+            
         }
     }
 }

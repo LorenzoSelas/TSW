@@ -28,7 +28,9 @@ public class Partida {
     @ManyToOne
     @JoinColumn(name = "ganador_id", nullable = false)
     protected User ganador;
-    
+    public Partida() {
+        
+    }
     public Partida(String i, List<User> us, User gan){
         this.id=i;
         this.users=us;

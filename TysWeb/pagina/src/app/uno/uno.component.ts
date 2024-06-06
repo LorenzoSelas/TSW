@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { UnoService } from './uno.service';
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { ManagerService } from '../manager.service';
+import { Carta } from './uno.model';
 @Component({
   selector: 'app-uno',
   templateUrl: './uno.component.html',
@@ -21,9 +22,25 @@ export class UnoComponent {
     this.poner = false;
   }
 
-  iniciar() {
-    this.mostrarElemento = !this.mostrarElemento;
+  ngOnInit(): void {
+    const idUsuario = '1'; // Aquí debes obtener el ID del usuario actual
+    const idTablero = '1'; // Aquí debes obtener el ID del tablero actual
+    this.repartirCartas(idUsuario, idTablero);
+}
+  iniciarPartida() {
+    this.mostrarElemento = true;
   }
+
+  repartirCartas(idUsuario: string, idTablero: string) {
+    this.unoService.repartirCartas(idUsuario, idTablero).subscribe(
+        () => {
+            console.log()
+        },
+        error => {
+            console.log('Error al repartir cartas:', error);
+        }
+    );
+}
   ponerCasilla(columna: number) {
     this.unoService.ponerCarta(this.manager.idPartida!).subscribe(
       _response => {

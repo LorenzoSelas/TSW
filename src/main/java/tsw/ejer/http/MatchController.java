@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import tsw.ejer.dao.PartidaDAO;
 import tsw.ejer.dao.UserDAO;
 import tsw.ejer.model.Tablero;
 import tsw.ejer.model.User;
@@ -29,6 +30,8 @@ public class MatchController {
     private UserDAO userDAO;
     @Autowired
     private MatchService matchService;
+    @Autowired
+    private PartidaDAO pDao;
 
     @GetMapping("start")
     public Tablero start(HttpSession session, @RequestParam String tipo){
