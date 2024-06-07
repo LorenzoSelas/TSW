@@ -133,7 +133,7 @@ public class Tablero4r extends Tablero {
         this.Iniciada = true;
         
     }
-    //TODO no guarda la partida en bbdd a pesar de añadir los campos al robot. Mirar si existe previamente en la tabla users
+    
     public void finalizar() {
         this.ganador=this.ultimoColor;
         if (this.users.get(0).getId().equals(this.users.get(0).getEmail()) && this.users.get(1).getId().equals(this.users.get(1).getEmail()))

@@ -38,7 +38,7 @@ public class Robot implements Runnable {
                     IWSListener listener = new IWSListener() {
                         @Override
                         public void notify(String message) {
-
+                            System.out.println(message);
                             // Parsear el mensaje como JSON si es necesario
                             try {
                                 if (message.equals("your turn")) {

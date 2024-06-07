@@ -51,7 +51,6 @@ public class WSClient {
  
     @OnMessage
     public void onText(String message, Session session) {
-    	System.out.println(message);
         if (this.listener == null)
             return;
         try {
