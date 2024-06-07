@@ -11,7 +11,6 @@ import { ManagerService } from '../manager.service';
   templateUrl: './raya.component.html',
   styleUrls: ['./raya.component.css']
 })
-
 export class RayaComponent {
   id: string = '';
   tablero: string = '';
@@ -35,6 +34,14 @@ export class RayaComponent {
 
     // Inicializar this.partida.celdas
     this.partida.celdas = Array.from({ length: 6 }, () => Array(7).fill(''));
+
+    // Suscribirse a actualizaciones del tablero
+    this.rayaService.tableroSubject.subscribe(tablero => {
+      this.actualizarTablero(tablero);
+    });
+
+    // Inicializar el WebSocket
+    this.rayaService.inicializar();
   }
 
   iniciar() {
@@ -52,34 +59,46 @@ export class RayaComponent {
       }
     );
   }
+
   ocuparCelda(casillas: string[]) {
     // Actualiza las celdas de la partida con las casillas recibidas
     for (let i = 0; i < casillas.length; i++) {
       for (let j = 0; j < casillas[i].length; j++) {
-        if (casillas[i][j] == "\0"){
+        if (casillas[i][j] == "\0") {
           this.partida.celdas[i][j] = "";
         } else {
           this.partida.celdas[i][j] = casillas[i][j];
         }
       }
     }
-  
+
     // Imprime las celdas en la consola para depuración
     for (let i = 0; i < this.partida.celdas.length; i++) {
       console.log(`Fila ${i}: ${this.partida.celdas[i].join(' ')}`);
     }
   }
 
-
-  //Posible llamada al servidor para poner, llamar a matches/meToca
-  puedoPoner(){
-      this.rayaService.puedoPoner().subscribe(
-        (response) => {
-          this.poner = response;
-        },
-        _error => {
-          console.log("Error al verificar si se puede poner.");
+  actualizarTablero(tablero: string[][]) {
+    for (let i = 0; i < tablero.length; i++) {
+      for (let j = 0; j < tablero[i].length; j++) {
+        if (tablero[i][j] == "\0") {
+          this.partida.celdas[i][j] = "";
+        } else {
+          this.partida.celdas[i][j] = tablero[i][j];
         }
-      );
+      }
+    }
+  }
+
+  // Posible llamada al servidor para poner, llamar a matches/meToca
+  puedoPoner() {
+    this.rayaService.puedoPoner().subscribe(
+      (response) => {
+        this.poner = response;
+      },
+      _error => {
+        console.log("Error al verificar si se puede poner.");
+      }
+    );
   }
 }

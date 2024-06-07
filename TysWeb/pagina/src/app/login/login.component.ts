@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { user } from '../user/user';
 import { UsersService } from '../users.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +15,7 @@ export class LoginComponent {
   loginForm: FormGroup;
   ws? = WebSocket;
 
-  constructor(private usersService: UsersService, private formBuilder: FormBuilder) {
+  constructor(private usersService: UsersService, private formBuilder: FormBuilder, private router: Router) {
     this.loginForm = this.formBuilder.group({
       Email: ['', [Validators.required, Validators.email]],
       Pwd: ['', [Validators.required, Validators.minLength(5)]]
@@ -26,6 +27,7 @@ export class LoginComponent {
     this.usuario.datosLogin(this.loginForm.get('Email')?.value, this.loginForm.get('Pwd')?.value);
     this.usersService.login(this.usuario).subscribe((data) => {
       console.log(JSON.stringify(data));
+      this.router.navigate(["/"])
     })
   }
 

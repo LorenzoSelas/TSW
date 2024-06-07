@@ -46,6 +46,7 @@ public class WSGames extends TextWebSocketHandler {
 				sessionsByRoom.get(roomId).add(session);
 			} catch (Exception e) {
 				List<WebSocketSession> lista = new ArrayList<>();
+				lista.add(session);
 				sessionsByRoom.put(roomId, lista);
 			}
             this.sessions.add(session);
@@ -54,6 +55,7 @@ public class WSGames extends TextWebSocketHandler {
 				sessionsByRoom.get("General").add(session);
 			} catch (Exception e) {
 				List<WebSocketSession> lista = new ArrayList<>();
+				sessionsByRoom.get("General").add(session);
 				sessionsByRoom.put("General", lista);
 			}
         }
@@ -82,7 +84,7 @@ public class WSGames extends TextWebSocketHandler {
 		}else if (tipo.equals("ACTUALIZACION")) {
 			JSONArray casillas = jso.getJSONArray("Tablero");
 			List<WebSocketSession> ses = sessionsByRoom.get(jso.getString("idTablero"));
-			TextMessage mes = new TextMessage(casillas.toString());
+			TextMessage mes = new TextMessage("TABLERO:" + casillas.toString());
 			for (WebSocketSession webSocketSession : ses) {
 				webSocketSession.sendMessage(mes);	
 			}

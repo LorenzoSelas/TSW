@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import tsw.ejer.Excepcion.TableNotInitializedException;
 import tsw.ejer.dao.PartidaDAO;
+import tsw.ejer.dao.UserDAO;
 import tsw.ejer.model.Tablero;
 import tsw.ejer.model.Tablero4r;
 import tsw.ejer.model.User;
@@ -22,12 +23,14 @@ import tsw.ejer.model.User;
 public class MatchService {
 
     private final PartidaDAO partidaDAO;
+    private final UserDAO userDAO;
     private Map<String, Tablero> tableros = new HashMap<String, Tablero>();
     private List<Tablero> tablerosPendientes = new ArrayList<>();
 
     @Autowired
-    public MatchService(PartidaDAO partidaDAO) {
+    public MatchService(PartidaDAO partidaDAO, UserDAO uDAO) {
         this.partidaDAO = partidaDAO;
+        this.userDAO = uDAO;
     }
 
     public Tablero newMatch(User user, String juego) throws Exception {
@@ -44,7 +47,7 @@ public class MatchService {
             try {
                 tab = (Tablero) cons.newInstance();
                 if (tab instanceof Tablero4r) {
-                    ((Tablero4r) tab).setPartidaDAO(partidaDAO);
+                    ((Tablero4r) tab).setDAO(partidaDAO, userDAO);
                 }
             } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                 throw new Exception("Ha ocurrido un problema, contacta con el administrador si el problema persiste.");
