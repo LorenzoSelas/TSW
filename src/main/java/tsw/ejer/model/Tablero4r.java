@@ -21,7 +21,7 @@ public class Tablero4r extends Tablero {
     private WSClient wsClient;
     private char[][] casillas = new char[6][7];
     private char ultimoColor;
-    private char ganador = Character.MIN_VALUE;
+    private String ganador = Character.MIN_VALUE+"";
     private Robot robot;
 
     public void setDAO(PartidaDAO pDAO, UserDAO uDAO) {
@@ -51,7 +51,7 @@ public class Tablero4r extends Tablero {
         } catch (Exception e) {
             throw new Exception("Parametros no reconocidos para este tipo de juego.");
         }
-        if (ganador != Character.MIN_VALUE)
+        if (ganador != Character.MIN_VALUE+"")
             throw new MovimientoIlegalException("La partida esta finalizada, el ganador es: " + this.ganador);
         if (!jugadorConTurno.getId().equals(idUser))
             throw new MovimientoIlegalException("No es el turno de " + idUser);
@@ -59,7 +59,6 @@ public class Tablero4r extends Tablero {
             if (this.casillas[i][column] == '\0') {
                 this.casillas[i][column] = ultimoColor;
                 if (comprobarFin(i, column)){
-                    ganador = ultimoColor;
                     finalizar();
                 } else {
                     ultimoColor = this.ultimoColor == 'R' ? 'A' : 'R';
@@ -135,7 +134,7 @@ public class Tablero4r extends Tablero {
     }
     
     public void finalizar() {
-        this.ganador=this.ultimoColor;
+        this.ganador=this.jugadorConTurno.getNombre();
         if (this.users.get(0).getId().equals(this.users.get(0).getEmail()) && this.users.get(1).getId().equals(this.users.get(1).getEmail()))
             return;
         Partida partida = new Partida(id, users, jugadorConTurno);
