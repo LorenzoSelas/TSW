@@ -18,6 +18,7 @@ public abstract class Tablero {
     @Autowired
     protected PartidaDAO pDAO;
 
+    @Autowired
     public Tablero(){
         id = UUID.randomUUID().toString();
         this.users = new ArrayList<>();

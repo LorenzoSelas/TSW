@@ -1,25 +1,21 @@
 package tsw.ejer.model;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import org.json.JSONObject;
-
+import tsw.ejer.dao.UserDAO;
 import tsw.ejer.ws.IWSListener;
 import tsw.ejer.ws.WSClient;
 
 public class Robot implements Runnable {
+    private UserDAO userDAO;
     private Tablero4r partida;
     User userBot;
 
-    public Robot(Tablero4r p) {
+    public Robot(Tablero4r p, UserDAO userDAO) {
         this.partida = p;
-        userBot = new User();
-        userBot.setEmail(userBot.getId());
-        userBot.setNombre(userBot.getId());
-        userBot.setPassword(userBot.getId());
+        this.userDAO = userDAO;
     }
 
     @Override
@@ -30,7 +26,12 @@ public class Robot implements Runnable {
             if (comprobacion()) {
                 // Aquí puedes agregar la lógica a ejecutar si la comprobación es verdadera
                 System.out.println("La comprobación ha devuelto true.");
-                this.partida.addUser(userBot);
+                this.userBot = new User();
+                this.userBot.setEmail(this.userBot.getId());
+                this.userBot.setNombre(this.userBot.getId());
+                this.userBot.setPassword(this.userBot.getId());
+                this.userDAO.save(this.userBot);
+                this.partida.addUser(this.userBot);
                 this.partida.iniciar();
 
                 try {

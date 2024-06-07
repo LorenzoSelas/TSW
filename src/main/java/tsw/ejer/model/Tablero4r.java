@@ -5,26 +5,32 @@ import java.util.Random;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import tsw.ejer.Excepcion.MovimientoIlegalException;
 import tsw.ejer.Excepcion.TableNotInitializedException;
 import tsw.ejer.dao.PartidaDAO;
+import tsw.ejer.dao.UserDAO;
 import tsw.ejer.ws.WSClient;
 
 public class Tablero4r extends Tablero {
-    private WSClient wsClient;
+    @Autowired
+    private UserDAO userDAO;
+    @Autowired
     private PartidaDAO pDAO;
+    private WSClient wsClient;
     private char[][] casillas = new char[6][7];
     private char ultimoColor;
     private char ganador = Character.MIN_VALUE;
     private Robot robot;
 
-    public void setPartidaDAO(PartidaDAO pDAO) {
+    public void setDAO(PartidaDAO pDAO, UserDAO uDAO) {
         this.pDAO = pDAO;
+        this.userDAO = uDAO;
     }
 
     public void generarRobot(){
-        this.robot = new Robot(this);
+        this.robot = new Robot(this, userDAO);
 
         Thread robotThread = new Thread(robot);
         robotThread.start();
@@ -130,12 +136,25 @@ public class Tablero4r extends Tablero {
     //TODO no guarda la partida en bbdd a pesar de añadir los campos al robot. Mirar si existe previamente en la tabla users
     public void finalizar() {
         this.ganador=this.ultimoColor;
+        if (this.users.get(0).getId().equals(this.users.get(0).getEmail()) && this.users.get(1).getId().equals(this.users.get(1).getEmail()))
+            return;
         Partida partida = new Partida(id, users, jugadorConTurno);
         try {
-            pDAO.save(partida);
+            this.userDAO.findById(users.get(0).getId());
+        } catch (Exception e) {
+            this.userDAO.save(users.get(0));
+            e.printStackTrace();
+        }
+        try {
+            this.userDAO.findById(users.get(1).getId());
+        } catch (Exception e) {
+            this.userDAO.save(users.get(1));
+            e.printStackTrace();
+        }
+        try {
+            this.pDAO.save(partida);
         } catch (Exception e) {
             e.printStackTrace();
-            
         }
     }
 }
