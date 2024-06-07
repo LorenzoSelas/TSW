@@ -1,15 +1,20 @@
 
 <p>{{ id }}</p>
+<div class="contenedorIniciar">
+    <button class="iniciar4R" (click)="iniciar()">
+        Iniciar Partida
+    </button>
+</div>
 
-<button (click)="iniciar()">
-    Iniciar Partida
-</button>
-
-<ng-container *ngIf="mostrarElemento">
-    <div *ngFor="let row of partida.celdas; let i=index">
-        <button (click)="ponerCasilla(j)" *ngFor="let col of row; let j=index">
+<ng-container class="tablero4R" *ngIf="mostrarElemento">
+    <div class="contenedor4R" *ngFor="let row of partida.celdas; let i = index">
+        <button class="casilla4R" 
+                (click)="ponerCasilla(j)" 
+                *ngFor="let col of row; let j = index"
+                [ngClass]="{'red-button': col === 'R', 'blue-button': col === 'A'}">
             <span *ngIf="col">{{col}}</span>
             <span *ngIf="!col">&nbsp;</span>
         </button>
     </div>
 </ng-container>
+

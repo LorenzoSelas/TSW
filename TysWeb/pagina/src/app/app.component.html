@@ -29,15 +29,22 @@
 
 <router-outlet></router-outlet>
 
-<div id="chat-box"></div>
-<input type="text" #usuario placeholder="Tu nombre">
-<br>
-<span> {{ estado }}</span>
-<button (click)="conectar()">Conectar</button>
-<div #zonaDeChat style="display: none;">
-  <input type="text" #destinatario placeholder="Destinatario">
-  <input type="text" #mensaje placeholder="Texto">
-  <button (click)="enviar()">Enviar</button>
+<div class="chat">
+  <div id="chat-box"></div>
+  <div class="nombre">
+    <input type="text" #usuario placeholder="Tu nombre">
+  <br>
+  <span [ngClass]="{'red-text': estado === 'Desconectado', 'green-text': estado === 'Conectado'}"> 
+    {{ estado }}
+  </span>
+  </div>
+  <button class="conectar" (click)="conectar()">Conectar</button>
+  <div #zonaDeChat style="display: none;">
+    <input type="text" #destinatario placeholder="Destinatario">
+    <input type="text" #mensaje placeholder="Texto">
+    <button (click)="enviar()">Enviar</button>
+  </div>
+  
 </div>
 
 <div *ngIf="isHomeRoute()" class="menu_juegos">

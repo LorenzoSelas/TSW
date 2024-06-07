@@ -48,8 +48,6 @@
 }
 .menu_juegos button:hover{
   background-color: #E45644;
-  height:70px;
-  width:250px;
   font-weight: bolder;
   font-size: 40px;
 }
@@ -60,4 +58,48 @@
   font-weight: 800;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   
+}
+
+.chat{
+  width: 100%;
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.chat input{
+  border-radius: 5px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 15px;
+  font-weight: bold;
+}
+.red-text {
+  color: rgb(231, 40, 2);
+}
+
+.green-text {
+  color: rgb(8, 209, 4);;
+}
+.nombre{
+  display:flex;
+  gap:20px;
+  padding: 10px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 25px;
+}
+
+.conectar{
+  width:200px;
+  padding:10px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 25px;
+  color:white;
+  font-weight: bold;
+  border-radius:5px;
+  background-color: rgb(17, 233, 17);
+}
+
+.conectar:hover{
+  background-color: rgb(8, 172, 8);
 }
